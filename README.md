@@ -1,12 +1,10 @@
 # TupleSpaces
 
 Distributed Systems Project 2024
-
-*(fill the line below with the group identifier, for example A25 or T25, and then delete this line)*  
-**Group GXX**
-
-*(choose one of the following levels and erase the other one)*  
-**Difficulty level: I am Death incarnate! | Bring 'em on!**
+  
+**Group A29**
+  
+**Difficulty level: I am Death incarnate!**
 
 
 ### Code Identification
@@ -17,7 +15,6 @@ code dependency management, to ensure your code runs using the correct component
 
 ### Team Members
 
-*(fill the table below with the team members, and then delete this line)*
 
 | Number | Name              | User                             | Email                               |
 |--------|-------------------|----------------------------------|-------------------------------------|
