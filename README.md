@@ -21,9 +21,9 @@ code dependency management, to ensure your code runs using the correct component
 
 | Number | Name              | User                             | Email                               |
 |--------|-------------------|----------------------------------|-------------------------------------|
-| 11111  | Alice Distributed | <https://github.com/AliceUser>   | <mailto:alice@tecnico.ulisboa.pt>   |
-| 22222  | Bob Systems       | <https://github.com/BobUser>     | <mailto:bob@tecnico.ulisboa.pt>     |
-| 33333  | Charlie Rules     | <https://github.com/CharlieUser> | <mailto:charlie@tecnico.ulisboa.pt> |
+| 103471 | João Fidalgo      | <https://github.com/AliceUser>   | <mailto:alice@tecnico.ulisboa.pt>   |
+| 104139 | Rodrigo Friães    | <https://github.com/BobUser>     | <mailto:bob@tecnico.ulisboa.pt>     |
+|  89402 | Aldo Cachudo      | <https://github.com/CharlieUser> | <mailto:charlie@tecnico.ulisboa.pt> |
 
 ## Getting Started
 
