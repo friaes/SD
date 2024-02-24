@@ -21,8 +21,8 @@ code dependency management, to ensure your code runs using the correct component
 
 | Number | Name              | User                             | Email                               |
 |--------|-------------------|----------------------------------|-------------------------------------|
-| 103471 | João Fidalgo      | <https://github.com/AliceUser>   | <mailto:alice@tecnico.ulisboa.pt>   |
-| 104139 | Rodrigo Friães    | <https://github.com/BobUser>     | <mailto:bob@tecnico.ulisboa.pt>     |
+| 103471 | João Fidalgo      | <https://github.com/JoaoFidalgo1403>   | <mailto:joao.fidalgo.1403@tecnico.ulisboa.pt>   |
+| 104139 | Rodrigo Friães    | <https://github.com/Friaes>     | <mailto:bob@tecnico.ulisboa.pt>     |
 |  89402 | Aldo Cachudo      | <https://github.com/CharlieUser> | <mailto:charlie@tecnico.ulisboa.pt> |
 
 ## Getting Started
