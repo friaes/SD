@@ -30,7 +30,7 @@ public class ServerState {
   }
 
   public String take(String pattern) {
-    String tuple = tuples.getMatchingTuple(pattern);
+    String tuple = getMatchingTuple(pattern);
     tuples.remove(tuple);
     return tuple;
   }

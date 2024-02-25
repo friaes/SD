@@ -59,6 +59,7 @@ public class CommandProcessor {
 
                 case EXIT:
                     exit = true;
+                    clientService.shutdown();
                     break;
 
                 default:
@@ -80,7 +81,7 @@ public class CommandProcessor {
         String tuple = split[1];
 
         // put the tuple
-        System.out.println("TODO: implement put command");
+        clientService.put(tuple);
 
     }
 

@@ -35,7 +35,7 @@ public class ServerMain {
 			return;
 		}
 
-		final int port = Integer.parseInt(args[0]);
+		final int port = Integer.parseInt(args[1]);
 		final BindableService impl = new ServiceImpl();
 		debug("Port: " + port);
 
