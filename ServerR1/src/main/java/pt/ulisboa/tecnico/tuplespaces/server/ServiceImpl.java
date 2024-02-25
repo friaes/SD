@@ -63,6 +63,17 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
 
     @Override
 	public void getTupleSpacesState(getTupleSpacesStateRequest request, StreamObserver<getTupleSpacesStateResponse> responseObserver) {
-        System.out.println(request); //debug
-    }
+
+		System.out.println(request); //debug
+		
+		// You must use a builder to construct a new Protobuffer object
+		GetTupleSpacesStateResponse response = getTupleSpacesStateResponse.newBuilder().setTuple(state.getTupleSpacesState()).build();
+
+		// Use responseObserver to send a single response back
+		responseObserver.onNext(response);
+
+		// When you are done, you must call onCompleted
+		responseObserver.onCompleted();
+	}
+        
 }
