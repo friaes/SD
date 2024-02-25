@@ -30,12 +30,12 @@ public class ServerState {
   }
 
   public String take(String pattern) {
-    // TODO
-    return null;
+    String tuple = tuples.getMatchingTuple(pattern);
+    tuples.remove(tuple);
+    return tuple;
   }
 
   public List<String> getTupleSpacesState() {
-    // TODO
-    return null;
+    return this.tuples;
   }
 }
