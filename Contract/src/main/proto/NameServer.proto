@@ -1,0 +1,36 @@
+syntax = "proto3";
+package pt.ulisboa.tecnico.nameserver.contract;
+
+message registerRequest {
+  string service = 1;
+  string qualifier = 2;
+  string address = 3;
+}
+
+message registerResponse {
+  optional string exception = 1; // should be exception
+}
+
+message lookupRequest {
+  string service = 1;
+  string qualifier = 2;
+}
+
+message lookupResponse {
+  repeated string server = 1;
+}
+
+message deleteRequest {
+  string service = 1;
+  string host_port = 2;
+}
+
+message deleteResponse {
+  optional string exception = 1; // should be exception
+}
+
+service NameServer {
+  rpc register(registerRequest) returns (registerResponse);
+  rpc lookup(lookupRequest) returns (lookupResponse);
+  rpc delete(deleteRequest) returns (deleteResponse);
+}
