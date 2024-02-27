@@ -38,4 +38,37 @@ public class ServerState {
   public List<String> getTupleSpacesState() {
     return this.tuples;
   }
-}
+
+  //MIGHT BE THIS IMPLEMENTATION THAT IS CORRECT
+  /*private List<String> getMatchingTuple(String pattern) {
+    List<String> matchingTuples = new ArrayList<String>();
+    for (String tuple : this.tuples) {
+      if (tuple.matches(pattern)) {
+        matchingTuples.add(tuple);
+      }
+    }
+    return matchingTuples;
+  }
+
+  public List<String> read(String pattern) {
+    return getMatchingTuple(pattern);
+  } 
+
+  public List<String> take(String pattern) {
+    List<String> matchingTuples = new ArrayList<String>();
+    matchingTuples = removeTuples(pattern);
+    return matchingTuples;
+  }
+
+  private List<String> removeTuples(String pattern){
+    List<String> matchingTuples = new ArrayList<String>();
+    for (String tuple : this.tuples) {
+      if (tuple.matches(pattern)) {
+        matchingTuples.add(tuple);
+        tuples.remove(tuple);
+      }
+    }
+    return matchingTuples;
+    }*/
+
+  }

@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.tuplespaces.client.grpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import pt.ulisboa.tecnico.tuplespaces.centralized.contract.*;
@@ -23,6 +26,23 @@ public class ClientService {
 
     public void put(String tuple) {
         PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
-		PutResponse response = stub.put(request);
+		stub.put(request);
     }
+
+    public String read(String pattern) {
+        ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
+        return stub.read(request).getResult();
+    }
+
+    public String take(String pattern) {
+        TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).build();
+        return stub.take(request).getResult();
+    }
+
+    public List<String> getTupleSpacesState(String qualifier) {
+        getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
+        return stub.getTupleSpacesState(request).getTupleList();
+        
+    }
+
 }

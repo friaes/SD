@@ -54,6 +54,8 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
         System.out.println(request); //debug
 
         String searchPattern = request.getSearchPattern();
+        System.out.println(searchPattern); //debug
+
 
         TakeResponse response = TakeResponse.newBuilder().setResult(state.take(searchPattern)).build();
 
