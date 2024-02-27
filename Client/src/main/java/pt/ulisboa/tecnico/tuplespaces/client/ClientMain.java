@@ -26,8 +26,12 @@ public class ClientMain {
 
         // check arguments
         if (args.length != 3) {
-            System.err.println("Argument(s) missing!");
-            System.err.println("Usage: mvn exec:java -Dexec.args=<host> <port>");
+            if (args.length == 2)
+                System.err.println("Usage: mvn exec:java -Dexec.args=<host> <port>");
+            else {
+                System.err.println("Argument(s) missing!");
+                return;
+            }
         }
 
         // get the host and the port

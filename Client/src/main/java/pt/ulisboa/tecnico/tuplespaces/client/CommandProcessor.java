@@ -206,7 +206,6 @@ public class CommandProcessor {
             || 
             input.length > 2
             ) {
-            this.printUsage();
             return false;
         }
         else {
