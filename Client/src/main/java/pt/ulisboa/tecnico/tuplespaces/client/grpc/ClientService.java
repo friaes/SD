@@ -25,7 +25,7 @@ public class ClientService {
 
     public void debug(String debugMessage){
 		if (DEBUG_FLAG)
-			System.err.println("[DEBUG] " + debugMessage);
+			System.err.print("[DEBUG] " + debugMessage);
 	}
 
     public void shutdown() {
@@ -42,7 +42,7 @@ public class ClientService {
         ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
         debug(request.toString());
         String result = stub.read(request).getResult();
-        debug(result);
+        debug("Result: " + result + "\n");
         return result;
     }
 
@@ -50,15 +50,15 @@ public class ClientService {
         TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).build();
         debug(request.toString());
         String result = stub.take(request).getResult();
-        debug(result);
+        debug("Result: " + result + "\n");
         return result;
     }
 
     public List<String> getTupleSpacesState(String qualifier) {
         getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
-        debug(request.toString());
-        return stub.getTupleSpacesState(request).getTupleList();
-        
+        List<String> result = stub.getTupleSpacesState(request).getTupleList();
+        debug(result.toString() + "\n");
+        return result;        
     }
 
 }

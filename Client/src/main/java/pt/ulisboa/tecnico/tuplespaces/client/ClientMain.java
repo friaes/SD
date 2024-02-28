@@ -41,7 +41,7 @@ public class ClientMain {
         final String host = args[0];
         final String port = args[1];
         final String target = host + ":" + port;
-		debug("Target: " + target);
+		debug("Target: " + target + "\n");
 
         CommandProcessor parser = new CommandProcessor(new ClientService(target, DEBUG_FLAG));
         parser.parseInput();

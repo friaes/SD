@@ -23,6 +23,9 @@ public class ServerMain {
     
 		System.out.println(ServerMain.class.getSimpleName());
 
+		if ((args.length == 3) && args[2].equals("-debug"))
+			DEBUG_FLAG = true;
+
 		// receive and print arguments
 		debug(String.format("Received %d arguments", args.length));
 		for (int i = 0; i < args.length; i++) {
@@ -31,13 +34,10 @@ public class ServerMain {
 
 		// check arguments
 		if (args.length < 1) {
-			System.err.println("Argument(s) missing!");
-			System.err.printf("Usage: java %s port%n", ServerMain.class.getName());
+			debug("Argument(s) missing!");
+			debug(String.format("Usage: java %s port%n", ServerMain.class.getName()));
 			return;
 		}
-
-		if ((args.length == 3) && args[2].equals("-debug"))
-			DEBUG_FLAG = true;
 
 		final int port = Integer.parseInt(args[0]);
 		final BindableService impl = new ServiceImpl(DEBUG_FLAG);

@@ -12,11 +12,12 @@ public class ServerState {
 
   }
 
-  public void put(String tuple) {
+  public synchronized void put(String tuple) {
     tuples.add(tuple);
+    notifyAll();
   }
 
-  private String getMatchingTuple(String pattern) {
+  private synchronized String getMatchingTuple(String pattern) {
     for (String tuple : this.tuples) {
       if (tuple.matches(pattern)) {
         return tuple;
@@ -25,50 +26,39 @@ public class ServerState {
     return null;
   }
 
-  public String read(String pattern) {
-    return getMatchingTuple(pattern);
+  public synchronized String read(String pattern) {
+    String tuple = getMatchingTuple(pattern);
+    System.err.println("ANTES");
+    
+    while (tuple == null){
+      try {
+        wait(); // wait until the tuple is inserted
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      tuple = getMatchingTuple(pattern);
+    }
+    System.err.println("DEPOIS");
+
+    return tuple;
   }
 
-  public String take(String pattern) {
+  public synchronized String take(String pattern) {
     String tuple = getMatchingTuple(pattern);
+    while (tuple == null){
+      try {
+        wait(); // wait until the tuple is inserted
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      tuple = getMatchingTuple(pattern);
+    }
     tuples.remove(tuple);
     return tuple;
   }
 
-  public List<String> getTupleSpacesState() {
+  public synchronized List<String> getTupleSpacesState() {
     return this.tuples;
   }
 
-  //MIGHT BE THIS IMPLEMENTATION THAT IS CORRECT
-  /*private List<String> getMatchingTuple(String pattern) {
-    List<String> matchingTuples = new ArrayList<String>();
-    for (String tuple : this.tuples) {
-      if (tuple.matches(pattern)) {
-        matchingTuples.add(tuple);
-      }
-    }
-    return matchingTuples;
-  }
-
-  public List<String> read(String pattern) {
-    return getMatchingTuple(pattern);
-  } 
-
-  public List<String> take(String pattern) {
-    List<String> matchingTuples = new ArrayList<String>();
-    matchingTuples = removeTuples(pattern);
-    return matchingTuples;
-  }
-
-  private List<String> removeTuples(String pattern){
-    List<String> matchingTuples = new ArrayList<String>();
-    for (String tuple : this.tuples) {
-      if (tuple.matches(pattern)) {
-        matchingTuples.add(tuple);
-        tuples.remove(tuple);
-      }
-    }
-    return matchingTuples;
-    }*/
-
-  }
+}

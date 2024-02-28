@@ -31,7 +31,7 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
 		// StreamObserver is used to represent the gRPC stream between the server and
 		// client in order to send the appropriate responses (or errors, if any occur).
 
-		debug(request.toString());
+		debug("Request: " + request.toString());
 
         String newTuple = request.getNewTuple();
         state.put(newTuple);
@@ -47,11 +47,11 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void read(ReadRequest request, StreamObserver<ReadResponse> responseObserver) {
 
-		debug(request.toString());
+		debug("Request: " + request.toString());
         String searchPattern = request.getSearchPattern();
 
         ReadResponse response = ReadResponse.newBuilder().setResult(state.read(searchPattern)).build();
-		debug(response.getResult());
+		debug("Response: " + response.getResult());
 
 
 		// Send a single response through the stream.
@@ -63,11 +63,11 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void take(TakeRequest request, StreamObserver<TakeResponse> responseObserver) {
 
-		debug(request.toString());
+		debug("Request: " + request.toString());
         String searchPattern = request.getSearchPattern();
 
         TakeResponse response = TakeResponse.newBuilder().setResult(state.take(searchPattern)).build();
-		debug(response.getResult());
+		debug("Response: " + response.getResult());
 
 
 		// Send a single response through the stream.
@@ -79,10 +79,10 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void getTupleSpacesState(getTupleSpacesStateRequest request, StreamObserver<getTupleSpacesStateResponse> responseObserver) {
 
-		debug(request.toString());
+		debug("Request: " + request.toString());
 		// You must use a builder to construct a new Protobuffer object
 		getTupleSpacesStateResponse response = getTupleSpacesStateResponse.newBuilder().addAllTuple(state.getTupleSpacesState()).build();
-		debug(response.toString());
+		debug("Response: " + response.toString());
 
 		// Use responseObserver to send a single response back
 		responseObserver.onNext(response);
