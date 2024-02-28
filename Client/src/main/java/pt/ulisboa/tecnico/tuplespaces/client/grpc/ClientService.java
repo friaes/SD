@@ -14,11 +14,19 @@ public class ClientService {
 
     private final ManagedChannel channel;
     private final TupleSpacesGrpc.TupleSpacesBlockingStub stub;
+    private boolean DEBUG_FLAG = false;
 
-    public ClientService(String target) {
+    public ClientService(String target, boolean debug) {
+
+        this.DEBUG_FLAG = debug;        
         this.channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
         this.stub = TupleSpacesGrpc.newBlockingStub(channel);
     }
+
+    public void debug(String debugMessage){
+		if (DEBUG_FLAG)
+			System.err.println("[DEBUG] " + debugMessage);
+	}
 
     public void shutdown() {
         channel.shutdownNow();
@@ -26,21 +34,29 @@ public class ClientService {
 
     public void put(String tuple) {
         PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
+        debug(request.toString());
 		stub.put(request);
     }
 
     public String read(String pattern) {
         ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
-        return stub.read(request).getResult();
+        debug(request.toString());
+        String result = stub.read(request).getResult();
+        debug(result);
+        return result;
     }
 
     public String take(String pattern) {
         TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).build();
-        return stub.take(request).getResult();
+        debug(request.toString());
+        String result = stub.take(request).getResult();
+        debug(result);
+        return result;
     }
 
     public List<String> getTupleSpacesState(String qualifier) {
         getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
+        debug(request.toString());
         return stub.getTupleSpacesState(request).getTupleList();
         
     }

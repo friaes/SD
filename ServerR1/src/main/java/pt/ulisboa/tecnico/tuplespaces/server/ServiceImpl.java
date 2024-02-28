@@ -13,14 +13,25 @@ import static io.grpc.Status.INVALID_ARGUMENT;
 
 public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     
+
+	private boolean DEBUG_FLAG = false;
     private ServerState state = new ServerState();
+
+	public ServiceImpl(boolean debug){
+		this.DEBUG_FLAG = debug;
+	}
+
+	public void debug(String debugMessage){
+		if (DEBUG_FLAG)
+			System.err.print("[DEBUG] " + debugMessage);
+	}
 
     @Override
 	public void put(PutRequest request, StreamObserver<PutResponse> responseObserver) {
 		// StreamObserver is used to represent the gRPC stream between the server and
 		// client in order to send the appropriate responses (or errors, if any occur).
 
-        System.out.println(request); //debug
+		debug(request.toString());
 
         String newTuple = request.getNewTuple();
         state.put(newTuple);
@@ -36,11 +47,12 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void read(ReadRequest request, StreamObserver<ReadResponse> responseObserver) {
 
-        System.out.println(request); //debug
-
+		debug(request.toString());
         String searchPattern = request.getSearchPattern();
 
         ReadResponse response = ReadResponse.newBuilder().setResult(state.read(searchPattern)).build();
+		debug(response.getResult());
+
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
@@ -51,13 +63,12 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void take(TakeRequest request, StreamObserver<TakeResponse> responseObserver) {
 
-        System.out.println(request); //debug
-
+		debug(request.toString());
         String searchPattern = request.getSearchPattern();
-        System.out.println(searchPattern); //debug
-
 
         TakeResponse response = TakeResponse.newBuilder().setResult(state.take(searchPattern)).build();
+		debug(response.getResult());
+
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
@@ -68,10 +79,10 @@ public class ServiceImpl extends TupleSpacesGrpc.TupleSpacesImplBase{
     @Override
 	public void getTupleSpacesState(getTupleSpacesStateRequest request, StreamObserver<getTupleSpacesStateResponse> responseObserver) {
 
-		System.out.println(request); //debug
-		
+		debug(request.toString());
 		// You must use a builder to construct a new Protobuffer object
 		getTupleSpacesStateResponse response = getTupleSpacesStateResponse.newBuilder().addAllTuple(state.getTupleSpacesState()).build();
+		debug(response.toString());
 
 		// Use responseObserver to send a single response back
 		responseObserver.onNext(response);

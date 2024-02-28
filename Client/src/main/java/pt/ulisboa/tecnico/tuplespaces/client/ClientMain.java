@@ -6,12 +6,12 @@ public class ClientMain {
 
     /** Set flag to true to print debug messages. 
 	 * The flag can be set using the -Ddebug command line option. */
-	private static final boolean DEBUG_FLAG = (System.getProperty("debug") != null);
+	private static boolean DEBUG_FLAG = false;
 
 	/** Helper method to print debug messages. */
 	private static void debug(String debugMessage) {
 		if (DEBUG_FLAG)
-			System.err.println(debugMessage);
+			System.err.print(debugMessage);
 	}
 
     public static void main(String[] args) {
@@ -30,13 +30,16 @@ public class ClientMain {
             System.err.println("Usage: mvn exec:java -Dexec.args=<host> <port>");
         }
 
+        if ((args.length == 3) && args[2].equals("-debug"))
+			DEBUG_FLAG = true;
+
         // get the host and the port
         final String host = args[0];
         final String port = args[1];
         final String target = host + ":" + port;
 		debug("Target: " + target);
 
-        CommandProcessor parser = new CommandProcessor(new ClientService(target));
+        CommandProcessor parser = new CommandProcessor(new ClientService(target, DEBUG_FLAG));
         parser.parseInput();
 
     }

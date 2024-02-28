@@ -11,16 +11,17 @@ public class ServerMain {
 
     /** Set flag to true to print debug messages. 
 	   * The flag can be set using the -Ddebug command line option. */
-	  private static final boolean DEBUG_FLAG = (System.getProperty("debug") != null);
+	  private static boolean DEBUG_FLAG = false;
 
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
 		if (DEBUG_FLAG)
-			System.err.println(debugMessage);
+			System.err.print(debugMessage);
 	  }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-    System.out.println(ServerMain.class.getSimpleName());
+    
+		System.out.println(ServerMain.class.getSimpleName());
 
 		// receive and print arguments
 		System.out.printf("Received %d arguments%n", args.length);
@@ -35,8 +36,11 @@ public class ServerMain {
 			return;
 		}
 
-		final int port = Integer.parseInt(args[1]);
-		final BindableService impl = new ServiceImpl();
+		if ((args.length == 3) && args[2].equals("-debug"))
+			DEBUG_FLAG = true;
+
+		final int port = Integer.parseInt(args[0]);
+		final BindableService impl = new ServiceImpl(DEBUG_FLAG);
 		debug("Port: " + port);
 
 		// Create a new server to listen on port
