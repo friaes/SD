@@ -24,9 +24,9 @@ public class ServerMain {
 		System.out.println(ServerMain.class.getSimpleName());
 
 		// receive and print arguments
-		System.out.printf("Received %d arguments%n", args.length);
+		debug(String.format("Received %d arguments", args.length));
 		for (int i = 0; i < args.length; i++) {
-			System.out.printf("arg[%d] = %s%n", i, args[i]);
+			debug(String.format("arg[%d] = %s", i, args[i]));
 		}
 
 		// check arguments
