@@ -1,12 +1,23 @@
 package pt.ulisboa.tecnico.tuplespaces.client;
 
+import java.util.List;
+
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import pt.ulisboa.tecnico.tuplespaces.client.grpc.ClientService;
+import pt.ulisboa.tecnico.nameServer.contract.*;
+
 
 public class ClientMain {
 
     /** Set flag to true to print debug messages. 
 	 * The flag can be set using the -Ddebug command line option. */
 	private static boolean DEBUG_FLAG = false;
+    private static String targetDNS = "localhost: 5001";
+
+    private final static ManagedChannel channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
+    private final static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
+    
 
 	/** Helper method to print debug messages. */
 	private static void debug(String debugMessage) {
@@ -15,6 +26,7 @@ public class ClientMain {
 	}
 
     public static void main(String[] args) {
+
 
         if ((args.length == 3) && args[2].equals("-debug"))
 			DEBUG_FLAG = true;
@@ -38,16 +50,23 @@ public class ClientMain {
         }
 
         // get the host and the port
-        final String host = args[0];
-        final String port = args[1];
-        final String target = host + ":" + port;
-		debug("Target: " + target + "\n");
+        final List<String> target = lookupDNS("A", "TupleSpaces");
+		debug("Target: " + target.get(0) + "\n");
 
 
-        ClientService service = new ClientService(target, DEBUG_FLAG);
+        ClientService service = new ClientService(target.get(0), DEBUG_FLAG);
         CommandProcessor parser = new CommandProcessor(service);
         parser.parseInput();
         service.shutdown();
 
     }
+
+    
+    public static List<String> lookupDNS(String qualifier, String service){
+        NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
+        List<String> result = stubDNS.lookup(request).getAddressList();
+        debug(result.toString() + "\n");
+        return result;
+    }
+
 }

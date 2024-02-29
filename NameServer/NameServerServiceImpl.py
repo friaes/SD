@@ -4,7 +4,7 @@ import server
 import NameServer_pb2 as pb2
 import NameServer_pb2_grpc as pb2_grpc
 
-class NamingServerServiceImpl(pb2_grpc.HelloWorldServiceServicer):
+class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
     def __init__(self, *args, **kwargs):
         pass

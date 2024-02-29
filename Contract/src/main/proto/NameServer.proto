@@ -1,5 +1,5 @@
 syntax = "proto3";
-package pt.tecnico.grpc;
+package pt.ulisboa.tecnico.nameServer.contract;
 
 message RegisterRequest {
   string service = 1;
@@ -17,7 +17,7 @@ message LookupRequest {
 }
 
 message LookupResponse {
-  repeated string server = 1;
+  repeated string address = 1;
 }
 
 message DeleteRequest {

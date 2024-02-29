@@ -1,8 +1,11 @@
 import sys
+import grpc
+from concurrent import futures
+from NameServerServiceImpl import NameServerServiceImpl
+
 sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 
 import NameServer_pb2 as pb2
-
 import NameServer_pb2_grpc as pb2_grpc
 # define the port
 PORT = 5001
@@ -76,7 +79,7 @@ class ServiceEntry:
     def get_service_name(self):
         return self.service_name
 
-class NamingServer:
+class NameServer:
     # store map of service_name->service entry
     service_entries = {}
     def __init__(self):
@@ -109,7 +112,7 @@ class NamingServer:
         return
 
 
-ns = NamingServer()
+ns = NameServer()
 
 def register(service, qualifier, address):
     # check address format
@@ -120,7 +123,7 @@ def register(service, qualifier, address):
         ns.add_service(service, service_entry)
     except: # catch exception and return it?
         return 'Not possible to register the server'
-    return
+    return 'Server registered'
 
 
 def lookup(service, qualifier):
@@ -128,8 +131,7 @@ def lookup(service, qualifier):
     res = []
     for saddress, squalifier in ns.service_entries[service].get_server_entries().items():
         if qualifier == '' or squalifier == qualifier:
-            new = ServerEntry(squalifier, saddress)
-            res.append(new)
+            res.append(saddress)
     return res
 
 
@@ -139,4 +141,4 @@ def delete(service, address):
         ns.delete_server(service, address)
     except: # catch exception and return it?
         return 'Not possible to delete the server'
-    return
+    return 'Server deleted'

@@ -12,15 +12,15 @@ public class ClientService {
     This should include a method that builds a channel and stub,
     as well as individual methods for each remote operation of this service. */
 
-    private final ManagedChannel channel;
-    private final TupleSpacesGrpc.TupleSpacesBlockingStub stub;
+    private final ManagedChannel channelGrpc;
+    private final TupleSpacesGrpc.TupleSpacesBlockingStub stubGrpc;
     private boolean DEBUG_FLAG = false;
 
     public ClientService(String target, boolean debug) {
 
         this.DEBUG_FLAG = debug;        
-        this.channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-        this.stub = TupleSpacesGrpc.newBlockingStub(channel);
+        this.channelGrpc = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+        this.stubGrpc = TupleSpacesGrpc.newBlockingStub(channelGrpc);
     }
 
     public void debug(String debugMessage){
@@ -29,19 +29,19 @@ public class ClientService {
 	}
 
     public void shutdown() {
-        channel.shutdownNow();
+        channelGrpc.shutdownNow();
     }
 
     public void put(String tuple) {
         PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
         debug(request.toString());
-		stub.put(request);
+		stubGrpc.put(request);
     }
 
     public String read(String pattern) {
         ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
         debug(request.toString());
-        String result = stub.read(request).getResult();
+        String result = stubGrpc.read(request).getResult();
         debug("Result: " + result + "\n");
         return result;
     }
@@ -49,14 +49,14 @@ public class ClientService {
     public String take(String pattern) {
         TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).build();
         debug(request.toString());
-        String result = stub.take(request).getResult();
+        String result = stubGrpc.take(request).getResult();
         debug("Result: " + result + "\n");
         return result;
     }
 
     public List<String> getTupleSpacesState(String qualifier) {
         getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
-        List<String> result = stub.getTupleSpacesState(request).getTupleList();
+        List<String> result = stubGrpc.getTupleSpacesState(request).getTupleList();
         debug(result.toString() + "\n");
         return result;        
     }

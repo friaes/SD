@@ -1,10 +1,15 @@
 package pt.ulisboa.tecnico.tuplespaces.server;
 
 import io.grpc.BindableService;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import java.io.IOException;
+import java.util.List;
+import pt.ulisboa.tecnico.nameServer.contract.*;
+
 import static io.grpc.Status.INVALID_ARGUMENT;
 
 public class ServerMain {
@@ -12,6 +17,9 @@ public class ServerMain {
     /** Set flag to true to print debug messages. 
 	   * The flag can be set using the -Ddebug command line option. */
 	  private static boolean DEBUG_FLAG = false;
+	  private static ManagedChannel channelDNS = null;
+      private static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = null;
+	  private static String targetDNS = "localhost: 5001";
 
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
@@ -52,8 +60,25 @@ public class ServerMain {
 		// Server threads are running in the background.
 		System.out.println("Server started");
 
+		
+		// Register in DNS
+		channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
+        stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
+		String targetDNS = "localhost: " + args[1];
+		String res = registerDNS(args[0], "TupleSpace", targetDNS);
+		
+
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();
     }
+
+	public static String registerDNS(String qualifier, String service, String address){
+        NameServer.RegisterRequest request = NameServer.RegisterRequest.newBuilder().setQualifier(qualifier).setService(service).setAddress(address).build();
+        String result = stubDNS.register(request).getException();
+        debug(result.toString() + "\n");
+        return result;
+    }
+
+
 }
 
