@@ -16,7 +16,10 @@ public class ClientMain {
 
     public static void main(String[] args) {
 
-        System.out.println(ClientMain.class.getSimpleName());
+        if ((args.length == 3) && args[2].equals("-debug"))
+			DEBUG_FLAG = true;
+
+        debug(ClientMain.class.getSimpleName());
 
         // receive and print arguments
         debug(String.format("Received %d arguments%n", args.length));
@@ -34,17 +37,17 @@ public class ClientMain {
             }
         }
 
-        if ((args.length == 3) && args[2].equals("-debug"))
-			DEBUG_FLAG = true;
-
         // get the host and the port
         final String host = args[0];
         final String port = args[1];
         final String target = host + ":" + port;
 		debug("Target: " + target + "\n");
 
-        CommandProcessor parser = new CommandProcessor(new ClientService(target, DEBUG_FLAG));
+
+        ClientService service = new ClientService(target, DEBUG_FLAG);
+        CommandProcessor parser = new CommandProcessor(service);
         parser.parseInput();
+        service.shutdown();
 
     }
 }

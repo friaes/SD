@@ -28,7 +28,6 @@ public class ServerState {
 
   public synchronized String read(String pattern) {
     String tuple = getMatchingTuple(pattern);
-    System.err.println("ANTES");
     
     while (tuple == null){
       try {
@@ -38,7 +37,6 @@ public class ServerState {
       }
       tuple = getMatchingTuple(pattern);
     }
-    System.err.println("DEPOIS");
 
     return tuple;
   }
