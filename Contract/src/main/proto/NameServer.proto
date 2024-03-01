@@ -8,7 +8,6 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  // no response when successful, exception otherwise
 }
 
 message LookupRequest {
@@ -26,7 +25,6 @@ message DeleteRequest {
 }
 
 message DeleteResponse {
-  // no response when successful, exception otherwise
 }
 
 service NameServerService {
