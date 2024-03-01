@@ -12,14 +12,14 @@ class FormatError(Exception):
 
 class ServerEntry:
     # store host:port and qualifier for each server
-    qualifier = ''
-    address = ''
+    qualifier = ""
+    address = ""
     def __init__(self, qualifier, address):
         # check address format
 
         # check qualifier format
-        if qualifier not in ('A', 'B', 'C'):
-            raise RegisterError('Not possible to register server')
+        if qualifier not in ("A", "B", "C"):
+            raise RegisterError("Not possible to register server")
         self.qualifier = qualifier
         self.address = address
 
@@ -32,7 +32,7 @@ class ServerEntry:
 class ServiceEntry:
     # store service name and dict of server entries
     server_entries = {}
-    service_name = ''
+    service_name = ""
     def __init__(self, service):
         self.service = service
 
@@ -40,7 +40,7 @@ class ServiceEntry:
         self.server_entries[server_entry.get_address()] = server_entry.get_qualifier()
 
     def remove_server_entry(self, address):
-        if self.server_entries[address] != '':
+        if self.server_entries[address] != "":
             self.server_entries.pop(address, None)
 
     def get_server_entries(self):
@@ -57,7 +57,7 @@ class NameServer:
 
     def add_service(self, service_name, service_entry):
         if self.service_entries[service_name]:
-            raise RegisterError('Not possible to register server')
+            raise RegisterError("Not possible to register server")
         self.service_entries[service_name] = service_entry
         return
 
@@ -75,25 +75,26 @@ class NameServer:
                 deleted = True
 
         if not deleted:
-            raise DeleteError('Not possible to delete the server')
-        return 'Server deleted'
+            raise DeleteError("Not possible to delete the server")
+        return
 
     def register(self, service, qualifier, address):
         # check address format
         try:
+            print("Args: 1 - " + service + "\n2 - " + qualifier + "\n3 - " + address)
             server_entry = ServerEntry(qualifier, address)
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
             self.add_service(service, service_entry)
         except RegisterError: # catch exception and return it?
             raise
-        return 'Server registered'
+        return
 
 
     def lookup(self, service, qualifier):
         # check qualifier format
-        if qualifier not in ('A', 'B', 'C'):
-            raise FormatError('Invalid qualifier')
+        if qualifier not in ("A", "B", "C"):
+            raise FormatError("Invalid qualifier")
         res = []
         for saddress, squalifier in self.service_entries[service].get_server_entries().items():
             if qualifier == '' or squalifier == qualifier:
@@ -107,6 +108,6 @@ class NameServer:
             self.delete_server(service, address)
         except DeleteError: # catch exception and return it?
             raise
-        return 'Server deleted'
+        return
 
 
