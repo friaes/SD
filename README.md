@@ -68,7 +68,7 @@ To compile and run from project root:
 
 ```s
 cd ServerR1
-mvn compile exec:java [-Dexec.args="2001 A"]
+mvn compile exec:java -Dexec.args="2001 A [-debug]"
 ```
 
 ### TupleSpaces Client
@@ -77,7 +77,7 @@ To compile and run from project root:
 
 ```s
 cd Client
-mvn compile exec:java
+mvn compile exec:java [-Dexec.args="-debug"]
 ```
 
 
