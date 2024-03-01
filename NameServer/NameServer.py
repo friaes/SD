@@ -68,17 +68,14 @@ class NameServer:
         return self.service_entries
 
     def delete_server(self, service, address):
-        deleted = False
         service_entries = self.get_service_entries()
         service_entry = service_entries[service]
         server_entries = service_entry.get_server_entries()
-        for saddress, squalifier in server_entries.items():
-            if address == saddress:
-                service_entry.remove_server_entry(saddress)
-                deleted = True
 
-        if not deleted:
+        if address not in server_entries:
             raise DeleteError("Not possible to delete the server")
+
+        service_entry.remove_server_entry(address)
         return
 
     def register(self, service, qualifier, address):
