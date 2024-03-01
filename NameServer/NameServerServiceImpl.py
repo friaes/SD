@@ -44,7 +44,15 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         qualifier = request.qualifier
 
         # result is a list
-        result = self.ns.lookup(service, qualifier)
+        try:
+            result = self.ns.lookup(service, qualifier)
+        except NameServer.LookupError as le:
+            context.set_code(StatusCode.INTERNAL)
+            context.set_details(str(le))
+            raise RpcError(
+                Status=StatusCode.INTERNAL,
+                details=str(le)
+            )
 
         # create response
         response = pb2.LookupResponse(address=result)

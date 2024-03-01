@@ -68,23 +68,22 @@ class NameServer:
         return self.service_entries
 
     def delete_server(self, service, address):
-        deleted = False
         service_entries = self.get_service_entries()
         service_entry = service_entries[service]
         server_entries = service_entry.get_server_entries()
-        for saddress, squalifier in server_entries.items():
-            if address == saddress:
-                service_entry.remove_server_entry(saddress)
-                deleted = True
 
-        if not deleted:
+        if address not in server_entries:
             raise DeleteError("Not possible to delete the server")
+
+        service_entry.remove_server_entry(address)
         return
 
     def register(self, service, qualifier, address):
         # check address format
         try:
-            print("Args: 1 - " + service + "\n2 - " + qualifier + "\n3 - " + address)
+            print("Args:\n1 - " + service)
+            print("2 - " + qualifier)
+            print("3 - " + address)
             server_entry = ServerEntry(qualifier, address)
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
@@ -98,21 +97,27 @@ class NameServer:
         # check qualifier format
         if qualifier not in ("A", "B", "C"):
             raise FormatError("Invalid qualifier")
+        print("Args:\n1 - " + service)
+        print("2 - " + qualifier)
         res = []
         if service in self.service_entries: 
             for saddress, squalifier in self.service_entries[service].get_server_entries().items():
-                if qualifier == '' or squalifier == qualifier:
+                if qualifier == "" or squalifier == qualifier:
                     res.append(saddress)
+            if res == []:
+                raise LookupError("Could not find server to fulfill service")
         else: 
-            raise LookupError
+            raise LookupError("Could not find requested service")
         return res
 
 
     def delete(self, service, address):
         # check address format
+        print("Args:\n1 - " + service)
+        print("2 - " + address)
         try:
             self.delete_server(service, address)
-        except DeleteError: # catch exception and return it?
+        except DeleteError:
             raise
         return
 
