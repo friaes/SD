@@ -45,7 +45,7 @@ mvn -version
 
 ### Installation
 
-To compile and install all modules from root directory:
+To compile and install all modules from project root:
 
 ```s
 mvn clean install
@@ -55,7 +55,7 @@ mvn exec:exec
 
 ### Name Server
 
-To run from root directory:
+To run from project root:
 
 ```s
 cd NameServer
@@ -64,7 +64,7 @@ python3 server.py [-debug]
 
 ### TupleSpaces Server
 
-To compile and run from root directory:
+To compile and run from project root:
 
 ```s
 cd ServerR1
@@ -73,7 +73,7 @@ mvn compile exec:java [-Dexec.args="2001 A"]
 
 ### TupleSpaces Client
 
-To compile and run from root directory:
+To compile and run from project root:
 
 ```s
 cd Client
