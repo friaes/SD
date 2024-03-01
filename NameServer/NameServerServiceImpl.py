@@ -2,10 +2,11 @@ import sys
 sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 import NameServer_pb2 as pb2
 import NameServer_pb2_grpc as pb2_grpc
+import NameServer
 
 class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
-    ns = NameServer()
+    ns = NameServer.NameServer()
     def __init__(self, *args, **kwargs):
         pass
 

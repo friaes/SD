@@ -53,7 +53,6 @@ public class ClientMain {
         final List<String> target = lookupDNS("A", "TupleSpaces");
 		debug("Target: " + target.get(0) + "\n");
 
-
         ClientService service = new ClientService(target.get(0), DEBUG_FLAG);
         CommandProcessor parser = new CommandProcessor(service);
         parser.parseInput();
