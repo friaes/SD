@@ -143,3 +143,8 @@ buildNumber.properties
 /.venv/
 /NameServer/NameServer.iml
 /NameServer/__pycache__/
+
+build_all.sh
+start_client.sh
+start_dns.sh
+start_serverR1.sh
