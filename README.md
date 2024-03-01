@@ -45,11 +45,41 @@ mvn -version
 
 ### Installation
 
-To compile and install all modules:
+To compile and install all modules from root directory:
 
 ```s
 mvn clean install
+cd Contract
+mvn exec:exec
 ```
+
+### Name Server
+
+To run from root directory:
+
+```s
+cd NameServer
+python3 server.py [-debug]
+```
+
+### TupleSpaces Server
+
+To compile and run from root directory:
+
+```s
+cd ServerR1
+mvn compile exec:java [-Dexec.args="2001 A"]
+```
+
+### TupleSpaces Client
+
+To compile and run from root directory:
+
+```s
+cd Client
+mvn compile exec:java
+```
+
 
 ## Built With
 
