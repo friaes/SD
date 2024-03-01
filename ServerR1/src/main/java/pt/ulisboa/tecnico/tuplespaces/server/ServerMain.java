@@ -60,7 +60,7 @@ public class ServerMain {
 		// Register in DNS
 		channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
         stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
-		registerDNS("A", "TupleSpace", targetDNS);
+		registerDNS("A", "TupleSpaces", "localhost:2001");
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();

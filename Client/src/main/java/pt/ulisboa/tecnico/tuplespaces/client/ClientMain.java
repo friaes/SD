@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import pt.ulisboa.tecnico.tuplespaces.client.grpc.ClientService;
 import pt.ulisboa.tecnico.nameServer.contract.*;
 
@@ -28,7 +29,7 @@ public class ClientMain {
     public static void main(String[] args) {
 
 
-        if ((args.length == 3) && args[2].equals("-debug"))
+        if ((args.length == 1) && args[0].equals("-debug"))
 			DEBUG_FLAG = true;
 
         debug(ClientMain.class.getSimpleName());
@@ -39,32 +40,30 @@ public class ClientMain {
             debug(String.format("arg[%d] = %s%n", i, args[i]));
         }
 
-        // check arguments
-        if (args.length != 3) {
-            if (args.length == 2)
-                System.err.println("Usage: mvn exec:java -Dexec.args=<host> <port>");
-            else {
-                System.err.println("Argument(s) missing!");
-                return;
-            }
-        }
-
         // get the host and the port
         final List<String> target = lookupDNS("A", "TupleSpaces");
-		debug("Target: " + target.get(0) + "\n");
+        channelDNS.shutdown();
 
-        ClientService service = new ClientService(target.get(0), DEBUG_FLAG);
-        CommandProcessor parser = new CommandProcessor(service);
-        parser.parseInput();
-        service.shutdown();
+        if (target != null) {
+            debug("Target: " + target.get(0) + "\n");
 
+            ClientService service = new ClientService(target.get(0), DEBUG_FLAG);
+            CommandProcessor parser = new CommandProcessor(service);
+            parser.parseInput();
+            service.shutdown();
+        }
     }
 
     
     public static List<String> lookupDNS(String qualifier, String service){
-        NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
-        List<String> result = stubDNS.lookup(request).getAddressList();
-        debug(result.toString() + "\n");
+        List<String> result = null;
+        try {
+            NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
+            result = stubDNS.lookup(request).getAddressList();
+            debug(result.toString() + "\n");
+        } catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
+		}
         return result;
     }
 

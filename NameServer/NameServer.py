@@ -4,6 +4,9 @@ sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 class RegisterError(Exception):
     pass
 
+class LookupError(Exception):
+    pass
+
 class DeleteError(Exception):
     pass
 
@@ -34,7 +37,7 @@ class ServiceEntry:
     server_entries = {}
     service_name = ""
     def __init__(self, service):
-        self.service = service
+        self.service_name = service
 
     def add_server_entry(self, server_entry):
         self.server_entries[server_entry.get_address()] = server_entry.get_qualifier()
@@ -56,7 +59,7 @@ class NameServer:
         pass
 
     def add_service(self, service_name, service_entry):
-        if self.service_entries[service_name]:
+        if service_name in self.service_entries:
             raise RegisterError("Not possible to register server")
         self.service_entries[service_name] = service_entry
         return
@@ -96,9 +99,12 @@ class NameServer:
         if qualifier not in ("A", "B", "C"):
             raise FormatError("Invalid qualifier")
         res = []
-        for saddress, squalifier in self.service_entries[service].get_server_entries().items():
-            if qualifier == '' or squalifier == qualifier:
-                res.append(saddress)
+        if service in self.service_entries: 
+            for saddress, squalifier in self.service_entries[service].get_server_entries().items():
+                if qualifier == '' or squalifier == qualifier:
+                    res.append(saddress)
+        else: 
+            raise LookupError
         return res
 
 

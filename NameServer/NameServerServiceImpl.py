@@ -47,7 +47,7 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         result = self.ns.lookup(service, qualifier)
 
         # create response
-        response = pb2.LookupResponse(server=result)
+        response = pb2.LookupResponse(address=result)
 
         # return response
         return response
