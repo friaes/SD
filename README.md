@@ -20,7 +20,7 @@ code dependency management, to ensure your code runs using the correct component
 |--------|-------------------|----------------------------------|-------------------------------------|
 | 103471 | João Fidalgo      | <https://github.com/JoaoFidalgo1403>   | <joao.fidalgo.1403@tecnico.ulisboa.pt>   |
 | 104139 | Rodrigo Friães    | <https://github.com/Friaes>     | <rodrigo.friaes@tecnico.ulisboa.pt>     |
-|  89402 | Aldo Cachudo      | <https://github.com/CharlieUser> | <mailto:charlie@tecnico.ulisboa.pt> |
+|  89402 | Aldo Cachudo      | <https://github.com/aldomrc> | <mailto:aldomiguel@tecnico.ulisboa.pt> |
 
 ## Getting Started
 
