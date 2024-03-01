@@ -1,11 +1,12 @@
 import sys
 sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
-import server
 import NameServer_pb2 as pb2
 import NameServer_pb2_grpc as pb2_grpc
+import NameServer
 
 class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
+    ns = NameServer.NameServer()
     def __init__(self, *args, **kwargs):
         pass
 
@@ -13,14 +14,14 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         # print the received request
         print(request)
 
-        # get the name
+        # get the service, qualifier, address
         service = request.service
         qualifier = request.qualifier
         address = request.address
 
-        result = server.register(service, qualifier, address)
+        result = register(service, qualifier, address)
         # create response
-        response = pb2.registerResponse(exception=result)
+        response = pb2.RegisterResponse(exception=result)
 
         # return response
         return response
@@ -29,15 +30,15 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         # print the received request
         print(request)
 
-        # get the name
+        # get service and qualifier
         service = request.service
         qualifier = request.qualifier
 
         # result is a list
-        result = server.lookup(service, qualifier)
+        result = self.ns.lookup(service, qualifier)
 
         # create response
-        response = pb2.lookupResponse(server=result)
+        response = pb2.LookupResponse(server=result)
 
         # return response
         return response
@@ -50,10 +51,10 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         service = request.service
         address = request.address
 
-        result = server.delete(service, address)
+        result = self.ns.delete(service, address)
 
         # create response
-        response = pb2.deleteResponse(exception = result)
+        response = pb2.DeleteResponse(exception = result)
 
         # return response
         return response
