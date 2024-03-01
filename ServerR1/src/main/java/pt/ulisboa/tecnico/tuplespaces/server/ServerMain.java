@@ -24,6 +24,11 @@ public class ServerMain {
 	  }
 
     public static void main(String[] args) throws IOException, InterruptedException {
+
+		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
+			deleteDNS("TupleSpaces", "localhost:2001");
+			channelDNS.shutdownNow();
+		}));
     
 		System.out.println(ServerMain.class.getSimpleName());
 
@@ -64,12 +69,23 @@ public class ServerMain {
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();
+		
     }
 
 	public static void registerDNS(String qualifier, String service, String address){
 		try {
 			NameServer.RegisterRequest request = NameServer.RegisterRequest.newBuilder().setQualifier(qualifier).setService(service).setAddress(address).build();
 			stubDNS.register(request);
+		}
+		catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
+		}
+    }
+
+	public static void deleteDNS(String service, String address){
+		try {
+			NameServer.DeleteRequest request = NameServer.DeleteRequest.newBuilder().setService(service).setAddress(address).build();
+			stubDNS.delete(request);
 		}
 		catch (StatusRuntimeException e) {
 			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());

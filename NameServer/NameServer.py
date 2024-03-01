@@ -43,8 +43,10 @@ class ServiceEntry:
         self.server_entries[server_entry.get_address()] = server_entry.get_qualifier()
 
     def remove_server_entry(self, address):
-        if self.server_entries[address] != "":
+        if address in self.server_entries:
             self.server_entries.pop(address, None)
+        else:
+            raise DeleteError
 
     def get_server_entries(self):
         return self.server_entries
@@ -58,10 +60,11 @@ class NameServer:
     def __init__(self):
         pass
 
-    def add_service(self, service_name, service_entry):
+    def add_service(self, service_name, service_entry, server_entry):
         if service_name in self.service_entries:
-            raise RegisterError("Not possible to register server")
-        self.service_entries[service_name] = service_entry
+            self.service_entries[service_name].add_server_entry(server_entry)
+        else:
+            self.service_entries[service_name] = service_entry
         return
 
     def get_service_entries(self):
@@ -71,7 +74,6 @@ class NameServer:
         service_entries = self.get_service_entries()
         service_entry = service_entries[service]
         server_entries = service_entry.get_server_entries()
-
         if address not in server_entries:
             raise DeleteError("Not possible to delete the server")
 
@@ -87,7 +89,7 @@ class NameServer:
             server_entry = ServerEntry(qualifier, address)
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
-            self.add_service(service, service_entry)
+            self.add_service(service, service_entry, server_entry)
         except RegisterError: # catch exception and return it?
             raise
         return
