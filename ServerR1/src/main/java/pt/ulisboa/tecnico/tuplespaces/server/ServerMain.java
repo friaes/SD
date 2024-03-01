@@ -19,8 +19,8 @@ public class ServerMain {
 
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
-		if (DEBUG_FLAG)
-			System.err.print(debugMessage);
+		  if (DEBUG_FLAG)
+			  System.err.print("[DEBUG] " + debugMessage);
 	  }
 
     public static void main(String[] args) throws IOException, InterruptedException {
