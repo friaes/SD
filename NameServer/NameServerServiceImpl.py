@@ -3,6 +3,7 @@ sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 import NameServer_pb2 as pb2
 import NameServer_pb2_grpc as pb2_grpc
 import NameServer
+from grpc import RpcError, StatusCode
 
 class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
@@ -19,9 +20,17 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         qualifier = request.qualifier
         address = request.address
 
-        result = register(service, qualifier, address)
+        try:
+            self.ns.register(service, qualifier, address)
+        except NameServer.RegisterError as re:
+            context.set_code(StatusCode.INTERNAL)
+            context.set_details(str(re))
+            raise RpcError(
+                Status=StatusCode.INTERNAL,
+                details=str(re)
+            )
         # create response
-        response = pb2.RegisterResponse(exception=result)
+        response = pb2.RegisterResponse()
 
         # return response
         return response
@@ -51,10 +60,18 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
         service = request.service
         address = request.address
 
-        result = self.ns.delete(service, address)
+        try:
+            self.ns.delete(service, address)
+        except NameServer.DeleteError as de:
+            context.set_code(StatusCode.INTERNAL)
+            context.set_details(de)
+            raise RpcError(
+                Status=StatusCode.INTERNAL,
+                details=str(de)
+            )
 
         # create response
-        response = pb2.DeleteResponse(exception = result)
+        response = pb2.DeleteResponse()
 
         # return response
         return response

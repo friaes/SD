@@ -13,7 +13,7 @@ public class ClientMain {
     /** Set flag to true to print debug messages. 
 	 * The flag can be set using the -Ddebug command line option. */
 	private static boolean DEBUG_FLAG = false;
-    private static String targetDNS = "localhost: 5001";
+    private static String targetDNS = "localhost:5001";
 
     private final static ManagedChannel channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
     private final static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
@@ -52,7 +52,6 @@ public class ClientMain {
         // get the host and the port
         final List<String> target = lookupDNS("A", "TupleSpaces");
 		debug("Target: " + target.get(0) + "\n");
-
 
         ClientService service = new ClientService(target.get(0), DEBUG_FLAG);
         CommandProcessor parser = new CommandProcessor(service);

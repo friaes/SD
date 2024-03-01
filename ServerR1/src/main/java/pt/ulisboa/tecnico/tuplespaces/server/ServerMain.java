@@ -1,10 +1,6 @@
 package pt.ulisboa.tecnico.tuplespaces.server;
 
-import io.grpc.BindableService;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +15,7 @@ public class ServerMain {
 	  private static boolean DEBUG_FLAG = false;
 	  private static ManagedChannel channelDNS = null;
       private static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = null;
-	  private static String targetDNS = "localhost: 5001";
+	  private static String targetDNS = "localhost:5001";
 
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
@@ -64,21 +60,20 @@ public class ServerMain {
 		// Register in DNS
 		channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
         stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
-		String targetDNS = "localhost: " + args[1];
-		String res = registerDNS(args[0], "TupleSpace", targetDNS);
-		
+		registerDNS("A", "TupleSpace", targetDNS);
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();
     }
 
-	public static String registerDNS(String qualifier, String service, String address){
-        NameServer.RegisterRequest request = NameServer.RegisterRequest.newBuilder().setQualifier(qualifier).setService(service).setAddress(address).build();
-        String result = stubDNS.register(request).getException();
-        debug(result.toString() + "\n");
-        return result;
+	public static void registerDNS(String qualifier, String service, String address){
+		try {
+			NameServer.RegisterRequest request = NameServer.RegisterRequest.newBuilder().setQualifier(qualifier).setService(service).setAddress(address).build();
+			stubDNS.register(request);
+		}
+		catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
+		}
     }
-
-
 }
 
