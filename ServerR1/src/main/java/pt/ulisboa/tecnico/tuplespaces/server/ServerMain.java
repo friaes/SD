@@ -15,7 +15,7 @@ public class ServerMain {
 	  private static boolean DEBUG_FLAG = false;
 	  private static ManagedChannel channelDNS = null;
       private static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = null;
-	  private static String targetDNS = "localhost: 5001";
+	  private static String targetDNS = "localhost:5001";
 
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
@@ -75,7 +75,5 @@ public class ServerMain {
 			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
 		}
     }
-
-
 }
 
