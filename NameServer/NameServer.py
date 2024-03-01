@@ -1,6 +1,12 @@
 import sys
 sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 
+DEBUG_FLAG = False
+if len(sys.argv) >= 2:
+    if sys.argv[1] == "-debug":
+        DEBUG_FLAG = True
+        print("Debug Mode")
+
 class RegisterError(Exception):
     pass
 
@@ -13,13 +19,15 @@ class DeleteError(Exception):
 class FormatError(Exception):
     pass
 
+def debug(msg="empty message", flag=False):
+    if flag:
+        print("[DEBUG] " + msg)
+
 class ServerEntry:
     # store host:port and qualifier for each server
     qualifier = ""
     address = ""
     def __init__(self, qualifier, address):
-        # check address format
-
         # check qualifier format
         if qualifier not in ("A", "B", "C"):
             raise RegisterError("Not possible to register server")
@@ -81,11 +89,13 @@ class NameServer:
         return
 
     def register(self, service, qualifier, address):
-        # check address format
         try:
-            print("Args:\n1 - " + service)
-            print("2 - " + qualifier)
-            print("3 - " + address)
+
+            debug("register request received", DEBUG_FLAG)
+            debug("args:", DEBUG_FLAG)
+            debug(str("service - " + service), DEBUG_FLAG)
+            debug(str("qualifier - " + qualifier), DEBUG_FLAG)
+            debug(str("address - " + address), DEBUG_FLAG)
             server_entry = ServerEntry(qualifier, address)
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
@@ -99,8 +109,10 @@ class NameServer:
         # check qualifier format
         if qualifier not in ("A", "B", "C"):
             raise FormatError("Invalid qualifier")
-        print("Args:\n1 - " + service)
-        print("2 - " + qualifier)
+        debug("lookup request received", DEBUG_FLAG)
+        debug("args:", DEBUG_FLAG)
+        debug(str("service - " + service), DEBUG_FLAG)
+        debug(str("qualifier - " + qualifier), DEBUG_FLAG)
         res = []
         if service in self.service_entries: 
             for saddress, squalifier in self.service_entries[service].get_server_entries().items():
@@ -114,9 +126,10 @@ class NameServer:
 
 
     def delete(self, service, address):
-        # check address format
-        print("Args:\n1 - " + service)
-        print("2 - " + address)
+        debug("delete request received", DEBUG_FLAG)
+        debug("args:", DEBUG_FLAG)
+        debug(str("service - " + service), DEBUG_FLAG)
+        debug(str("address - " + address), DEBUG_FLAG)
         try:
             self.delete_server(service, address)
         except DeleteError:
