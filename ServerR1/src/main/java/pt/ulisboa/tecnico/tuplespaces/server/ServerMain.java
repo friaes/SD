@@ -24,12 +24,6 @@ public class ServerMain {
 	  }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-
-		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
-			deleteDNS("TupleSpaces", "localhost:2001");
-			channelDNS.shutdownNow();
-		}));
-    
 		System.out.println(ServerMain.class.getSimpleName());
 
 		if ((args.length == 3) && args[2].equals("-debug"))
@@ -48,7 +42,14 @@ public class ServerMain {
 			return;
 		}
 
-		final int port = Integer.parseInt(args[0]);
+		final int port;
+		if (args.length >= 2) {
+			port = Integer.parseInt(args[0]);
+		}
+		else {
+			port = 2001;
+		}
+
 		final BindableService impl = new ServiceImpl(DEBUG_FLAG);
 		debug("Port: " + port);
 
@@ -58,6 +59,12 @@ public class ServerMain {
 		// Start the server
 		server.start();
 
+		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
+			deleteDNS("TupleSpaces", "localhost:" + port);
+			channelDNS.shutdownNow();
+		}));
+
+
 		// Server threads are running in the background.
 		System.out.println("Server started");
 
@@ -65,7 +72,7 @@ public class ServerMain {
 		// Register in DNS
 		channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
         stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
-		registerDNS("A", "TupleSpaces", "localhost:2001");
+		registerDNS("A", "TupleSpaces", "localhost:" + port);
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();

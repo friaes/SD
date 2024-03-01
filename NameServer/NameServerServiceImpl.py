@@ -13,7 +13,7 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
     def register(self, request, context):
         # print the received request
-        print(request)
+        #print(request)
 
         # get the service, qualifier, address
         service = request.service
@@ -37,7 +37,7 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
     def lookup(self, request, context):
         # print the received request
-        print(request)
+        #print(request)
 
         # get service and qualifier
         service = request.service
@@ -62,7 +62,7 @@ class NameServerServiceImpl(pb2_grpc.NameServerServiceServicer):
 
     def delete(self, request, context):
         # print the received request
-        print(request)
+        #print(request)
 
         # get the name
         service = request.service
