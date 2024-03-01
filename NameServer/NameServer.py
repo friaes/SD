@@ -1,6 +1,15 @@
 import sys
 sys.path.insert(1, '../Contract/target/generated-sources/protobuf/python')
 
+class RegisterError(Exception):
+    pass
+
+class DeleteError(Exception):
+    pass
+
+class FormatError(Exception):
+    pass
+
 class ServerEntry:
     # store host:port and qualifier for each server
     qualifier = ''
@@ -10,8 +19,7 @@ class ServerEntry:
 
         # check qualifier format
         if qualifier not in ('A', 'B', 'C'):
-            # raise  exception ('Not possible to register server')
-            pass
+            raise RegisterError('Not possible to register server')
         self.qualifier = qualifier
         self.address = address
 
@@ -49,8 +57,7 @@ class NameServer:
 
     def add_service(self, service_name, service_entry):
         if self.service_entries[service_name]:
-            # raise some exception
-            pass
+            raise RegisterError('Not possible to register server')
         self.service_entries[service_name] = service_entry
         return
 
@@ -68,8 +75,7 @@ class NameServer:
                 deleted = True
 
         if not deleted:
-            # raise exception 'Not possible to delete the server')
-            return 'Not possible to delete the server'
+            raise DeleteError('Not possible to delete the server')
         return 'Server deleted'
 
     def register(self, service, qualifier, address):
@@ -79,13 +85,15 @@ class NameServer:
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
             self.add_service(service, service_entry)
-        except: # catch exception and return it?
-            return 'Not possible to register the server'
+        except RegisterError: # catch exception and return it?
+            raise
         return 'Server registered'
 
 
     def lookup(self, service, qualifier):
         # check qualifier format
+        if qualifier not in ('A', 'B', 'C'):
+            raise FormatError('Invalid qualifier')
         res = []
         for saddress, squalifier in self.service_entries[service].get_server_entries().items():
             if qualifier == '' or squalifier == qualifier:
@@ -97,8 +105,8 @@ class NameServer:
         # check address format
         try:
             self.delete_server(service, address)
-        except: # catch exception and return it?
-            return 'Not possible to delete the server'
+        except DeleteError: # catch exception and return it?
+            raise
         return 'Server deleted'
 
 
