@@ -144,45 +144,47 @@ public class CommandProcessor {
     }
 
     private void sleep(String[] split) {
-      if (split.length != 2){
-        this.printUsage();
-        return;
-      }
-      Integer time;
-
-      // checks if input String can be parsed as an Integer
-      try {
-         time = Integer.parseInt(split[1]);
-      } catch (NumberFormatException e) {
-        this.printUsage();
-        return;
-      }
-
-      try {
-        Thread.sleep(time*1000);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
+        if (split.length != 2){
+          this.printUsage();
+          return;
+        }
+        Integer time;
+  
+        // checks if input String can be parsed as an Integer
+        try {
+           time = Integer.parseInt(split[1]);
+        } catch (NumberFormatException e) {
+          this.printUsage();
+          return;
+        }
+  
+        try {
+          Thread.sleep(time*1000);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
     }
 
     private void setdelay(String[] split) {
-      if (split.length != 3){
-        this.printUsage();
-        return;
-      }
-      String qualifier = split[1];
-      Integer time;
-
-      // checks if input String can be parsed as an Integer
-      try {
-        time = Integer.parseInt(split[2]);
-      } catch (NumberFormatException e) {
-        this.printUsage();
-        return;
-      }
-
-      // register delay <time> for when calling server <qualifier>
-      System.out.println("TODO: implement setdelay command (only needed in phases 2+3)");
+        if (split.length != 3){
+          this.printUsage();
+          return;
+        }
+        int qualifier = indexOfServerQualifier(split[1]);
+        if (qualifier == -1)
+          System.out.println("Invalid server qualifier");
+  
+        Integer time;
+  
+        // checks if input String can be parsed as an Integer
+        try {
+          time = Integer.parseInt(split[2]);
+        } catch (NumberFormatException e) {
+          this.printUsage();
+          return;
+        }
+        // register delay <time> for when calling server <qualifier>
+        this.clientService.setDelay(qualifier, time);
     }
 
     private void printUsage() {
@@ -194,6 +196,19 @@ public class CommandProcessor {
                 "- sleep <integer>\n" +
                 "- setdelay <server> <integer>\n" +
                 "- exit\n");
+    }
+
+    private int indexOfServerQualifier(String qualifier) {
+        switch (qualifier) {
+            case "A":
+                return 0;
+            case "B":
+                return 1;
+            case "C":
+                return 2;
+            default:
+                return -1;
+        }
     }
 
     private boolean inputIsValid(String[] input){

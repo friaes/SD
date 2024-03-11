@@ -10,9 +10,66 @@ import pt.ulisboa.tecnico.nameServer.contract.*;
 
 
 public class ClientMain {
-
-    /** Set flag to true to print debug messages. 
+    /* Set flag to true to print debug messages. 
 	 * The flag can be set using the -Ddebug command line option. */
+	private static boolean DEBUG_FLAG = false;
+    private static String targetDNS = "localhost:5001";
+
+    private final static ManagedChannel channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
+    private final static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
+    static final int numServers = 3;
+
+    /* Helper method to print debug messages.*/
+	private static void debug(String debugMessage) {
+        if (DEBUG_FLAG)
+            System.err.print("[DEBUG] " + debugMessage);
+	}
+
+    public static void main(String[] args) {
+
+        if ((args.length == 1) && args[0].equals("-debug"))
+			DEBUG_FLAG = true;
+
+        debug(ClientMain.class.getSimpleName());
+
+        // receive and print arguments
+        debug(String.format("Received %d arguments%n", args.length));
+        for (int i = 0; i < args.length; i++) {
+            debug(String.format("arg[%d] = %s%n", i, args[i]));
+        }
+
+        // get the host and the port
+        final List<String> target = lookupDNS("", "TupleSpaces");
+        channelDNS.shutdown();
+
+        if (target != null) {
+            debug("Target: " + target + "\n");
+
+            ClientService service = new ClientService(ClientMain.numServers, target, DEBUG_FLAG);
+            CommandProcessor parser = new CommandProcessor(service);
+            parser.parseInput();
+            service.shutdown();
+        }
+
+    }
+
+    public static List<String> lookupDNS(String qualifier, String service){
+        List<String> result = null;
+        try {
+            NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
+            result = stubDNS.lookup(request).getAddressList();
+            debug(result.toString() + "\n");
+        } catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
+		}
+        return result;
+    }
+}
+/* Código Anterior
+public class ClientMain {
+
+    /* Set flag to true to print debug messages. 
+	 * The flag can be set using the -Ddebug command line option. 
 	private static boolean DEBUG_FLAG = false;
     private static String targetDNS = "localhost:5001";
 
@@ -20,7 +77,7 @@ public class ClientMain {
     private final static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
     
 
-	/** Helper method to print debug messages. */
+	/* Helper method to print debug messages. 
 	private static void debug(String debugMessage) {
         if (DEBUG_FLAG)
             System.err.print("[DEBUG] " + debugMessage);
@@ -68,3 +125,4 @@ public class ClientMain {
     }
 
 }
+*/

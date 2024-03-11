@@ -36,22 +36,22 @@ public class ServerMain {
 		}
 
 		// check arguments
-		if (args.length < 1) {
+		if (args.length <= 1) {
 			debug("Argument(s) missing!");
 			debug(String.format("Usage: java %s port%n", ServerMain.class.getName()));
 			return;
 		}
 
 		final int port;
-		if (args.length >= 2) {
-			port = Integer.parseInt(args[0]);
-		}
-		else {
-			port = 2001;
-		}
+		final int qualifier;
+		
+		port = Integer.parseInt(args[0]);
+		qualifier = Char.parseChar(args[1]);
+		
 
 		final BindableService impl = new ServiceImpl(DEBUG_FLAG);
 		debug("Port: " + port);
+		debug("Qualifier: " + qualifier);
 
 		// Create a new server to listen on port
 		Server server = ServerBuilder.forPort(port).addService(impl).build();
@@ -72,7 +72,7 @@ public class ServerMain {
 		// Register in DNS
 		channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
         stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
-		registerDNS("A", "TupleSpaces", "localhost:" + port);
+		registerDNS(qualifier, "TupleSpaces", "localhost:" + port);
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();
