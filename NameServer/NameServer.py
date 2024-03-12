@@ -120,6 +120,7 @@ class NameServer:
             raise LookupError("Could not find server to fulfill service")
         else: 
             raise LookupError("Could not find requested service")
+        return
 
 
     def delete(self, service, address):

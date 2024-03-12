@@ -1,4 +1,4 @@
-package pt.tecnico.grpc.client;
+package pt.ulisboa.tecnico.tuplespaces.client;
 
 import java.util.ArrayList;
 

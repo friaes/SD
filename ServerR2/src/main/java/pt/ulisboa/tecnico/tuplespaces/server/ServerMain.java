@@ -43,10 +43,10 @@ public class ServerMain {
 		}
 
 		final int port;
-		final int qualifier;
+		final String qualifier;
 		
 		port = Integer.parseInt(args[0]);
-		qualifier = Char.parseChar(args[1]);
+		qualifier = args[1];
 		
 
 		final BindableService impl = new ServiceImpl(DEBUG_FLAG);

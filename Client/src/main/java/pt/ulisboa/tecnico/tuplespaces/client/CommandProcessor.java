@@ -133,7 +133,10 @@ public class CommandProcessor {
             this.printUsage();
             return;
         }
-        String qualifier = split[1];
+        int qualifier = indexOfServerQualifier(split[1]);
+        if (qualifier == -1)
+          System.out.println("Invalid server qualifier");
+        
         List<String> allTuples = new ArrayList<String>();
         allTuples = clientService.getTupleSpacesState(qualifier);
         // get the tuple spaces state

@@ -6,8 +6,9 @@ import java.util.List;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import pt.ulisboa.tecnico.tuplespaces.replicaXuLiskov.contract.*;
-
+import pt.ulisboa.tecnico.tuplespaces.client.observer.*;
 import pt.ulisboa.tecnico.tuplespaces.client.util.OrderedDelayer;
+import pt.ulisboa.tecnico.tuplespaces.client.ResponseCollector;
 
 public class ClientService {
 
@@ -19,6 +20,7 @@ public class ClientService {
     private int numServers = 0;
 
     OrderedDelayer delayer;
+    ResponseCollector c;
 
     public ClientService(int numServers, List<String> targets, boolean debug) {
         this.DEBUG_FLAG = debug;  
@@ -33,6 +35,7 @@ public class ClientService {
         /* The delayer can be used to inject delays to the sending of requests to the 
             different servers, according to the per-server delays that have been set  */
         delayer = new OrderedDelayer(numServers);
+        c = new ResponseCollector();
     }
 
     public void debug(String debugMessage){
@@ -44,7 +47,6 @@ public class ClientService {
     public void setDelay(int id, int delay) {
         delayer.setDelay(id, delay);
 
-        /* TODO: Remove this debug snippet */
         debug("After setting the delay, I'll test it");
         for (Integer i : delayer) {
           debug("Now I can send request to stub[" + i + "]");
@@ -53,24 +55,48 @@ public class ClientService {
     }
 
     public void shutdown() {
-        for (int i = 0; i < numServers; i++) {
-            channels[i].shutdownNow();
-        }
+        for (ManagedChannel ch : channels)
+			ch.shutdown();
     }
 
+    public void put(String tuple) {
+        PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
+        debug(request.toString());
 
-    /* TODO: individual methods for each remote operation of the TupleSpaces service */
+        for (Integer id : delayer)
+		    this.stubs[id].put(request, new PutObserver(c));
 
-    /* Example: How to use the delayer before sending requests to each server 
-     *          Before entering each iteration of this loop, the delayer has already 
-     *          slept for the delay associated with server indexed by 'id'.
-     *          id is in the range 0..(numServers-1).
-    
-        for (Integer id : delayer) {
-            //stub[id].some_remote_method(some_arguments);
+        try {
+            c.waitUntilAllReceived(numServers);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        
+    }
+
+    public String read(String pattern) {
+        ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
+        debug(request.toString());
+
+        for (Integer id : delayer) 
+            this.stubs[id].read(request, new ReadObserver(c));
+            
+        try {
+            c.waitUntilAllReceived(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
-    */
+        return c.getStrings();
+    }
+
+    public String take(String pattern) {
+        return null;
+    }
+
+    public List<String> getTupleSpacesState(Integer id) {
+        return null;        
+    }
     
 }
 /* Código Anterior

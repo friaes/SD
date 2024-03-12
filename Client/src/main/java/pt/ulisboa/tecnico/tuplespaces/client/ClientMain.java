@@ -56,7 +56,6 @@ public class ClientMain {
         CommandProcessor parser = new CommandProcessor(service);
         parser.parseInput();
         service.shutdown();
-    
 
     }
 
@@ -64,7 +63,7 @@ public class ClientMain {
         String result = null;
         try {
             NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
-            result = stubDNS.lookup(request).getAddressList();
+            result = stubDNS.lookup(request).getAddress();
             debug(result.toString() + "\n");
         } catch (StatusRuntimeException e) {
 			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
