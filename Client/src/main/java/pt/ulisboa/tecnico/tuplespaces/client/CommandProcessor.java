@@ -83,7 +83,7 @@ public class CommandProcessor {
         String tuple = split[1];
 
         // put the tuple
-        clientService.put(tuple);
+        clientService.put(tuple, true);
         System.out.println("OK");
         System.out.println();
 

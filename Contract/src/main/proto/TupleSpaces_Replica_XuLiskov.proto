@@ -4,8 +4,10 @@ option java_multiple_files = true;
 
 message PutRequest {
   string newTuple = 1;
+  bool firstTime = 2;
 }
 message PutResponse {
+  string ack = 1;
 }
 
 message ReadRequest {

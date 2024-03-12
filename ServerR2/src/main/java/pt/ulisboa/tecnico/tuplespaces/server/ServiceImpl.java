@@ -34,9 +34,10 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 		debug("Request: " + request.toString());
 
         String newTuple = request.getNewTuple();
-        state.put(newTuple);
+		Boolean firstTime = request.getFirstTime();
+        state.put(newTuple, firstTime);
 
-		PutResponse response = PutResponse.newBuilder().build();
+		PutResponse response = PutResponse.newBuilder().setAck("ACK").build();
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);

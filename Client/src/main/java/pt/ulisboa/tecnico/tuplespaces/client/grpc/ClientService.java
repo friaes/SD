@@ -59,8 +59,8 @@ public class ClientService {
 			ch.shutdown();
     }
 
-    public void put(String tuple) {
-        PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
+    public void put(String tuple, Boolean firstTime) {
+        PutRequest request = PutRequest.newBuilder().setFirstTime(firstTime).setNewTuple(tuple).build();
         debug(request.toString());
 
         for (Integer id : delayer)
@@ -69,7 +69,7 @@ public class ClientService {
         try {
             c.waitUntilAllReceived(numServers);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            this.put(tuple, false);
         }
         
     }
