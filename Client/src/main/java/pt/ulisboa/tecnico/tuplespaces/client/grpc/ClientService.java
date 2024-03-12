@@ -20,14 +20,14 @@ public class ClientService {
 
     OrderedDelayer delayer;
 
-    public ClientService(int numServers, List<String> target, boolean debug) {
+    public ClientService(int numServers, List<String> targets, boolean debug) {
         this.DEBUG_FLAG = debug;  
         this.numServers = numServers;
         this.channels = new ManagedChannel[numServers];
         this.stubs = new TupleSpacesReplicaGrpc.TupleSpacesReplicaStub[numServers];
 
         for (int i = 0; i < numServers; i++) {
-			channels[i] = ManagedChannelBuilder.forTarget(target.get(i)).usePlaintext().build();
+			channels[i] = ManagedChannelBuilder.forTarget(targets.get(i)).usePlaintext().build();
 			stubs[i] = TupleSpacesReplicaGrpc.newStub(channels[i]);
 		}
         /* The delayer can be used to inject delays to the sending of requests to the 

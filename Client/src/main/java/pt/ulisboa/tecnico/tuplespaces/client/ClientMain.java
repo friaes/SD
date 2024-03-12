@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.tuplespaces.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.grpc.ManagedChannel;
@@ -39,22 +40,28 @@ public class ClientMain {
         }
 
         // get the host and the port
-        final List<String> target = lookupDNS("", "TupleSpaces");
+        final List<String> targets = new ArrayList<>();
+        targets.add(lookupDNS("A", "TupleSpaces"));
+        targets.add(lookupDNS("B", "TupleSpaces"));
+        targets.add(lookupDNS("C", "TupleSpaces"));
         channelDNS.shutdown();
 
-        if (target != null) {
-            debug("Target: " + target + "\n");
-
-            ClientService service = new ClientService(ClientMain.numServers, target, DEBUG_FLAG);
-            CommandProcessor parser = new CommandProcessor(service);
-            parser.parseInput();
-            service.shutdown();
+        for (int i = 0; i < numServers; i++){
+            if (targets.get(i) != null)
+                debug("Target: " + targets.get(i) + "\n");
+            else return;
         }
+
+        ClientService service = new ClientService(numServers, targets, DEBUG_FLAG);
+        CommandProcessor parser = new CommandProcessor(service);
+        parser.parseInput();
+        service.shutdown();
+    
 
     }
 
-    public static List<String> lookupDNS(String qualifier, String service){
-        List<String> result = null;
+    public static String lookupDNS(String qualifier, String service){
+        String result = null;
         try {
             NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
             result = stubDNS.lookup(request).getAddressList();

@@ -113,16 +113,13 @@ class NameServer:
         debug("args:", DEBUG_FLAG)
         debug(str("service - " + service), DEBUG_FLAG)
         debug(str("qualifier - " + qualifier), DEBUG_FLAG)
-        res = []
         if service in self.service_entries: 
             for saddress, squalifier in self.service_entries[service].get_server_entries().items():
-                if qualifier == "" or squalifier == qualifier:
-                    res.append(saddress)
-            if res == []:
-                raise LookupError("Could not find server to fulfill service")
+                if squalifier == qualifier:
+                    return saddress
+            raise LookupError("Could not find server to fulfill service")
         else: 
             raise LookupError("Could not find requested service")
-        return res
 
 
     def delete(self, service, address):
