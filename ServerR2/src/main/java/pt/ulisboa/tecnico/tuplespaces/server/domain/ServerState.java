@@ -12,11 +12,9 @@ public class ServerState {
 
   }
 
-  public synchronized void put(String tuple, Boolean firstTime) {
-    if (firstTime || (!firstTime && getMatchingTuple(tuple) == null)){
-      tuples.add(tuple);
-      notifyAll();
-    }
+  public synchronized void put(String tuple) {
+    tuples.add(tuple);
+    notifyAll();
   }
 
   private synchronized String getMatchingTuple(String pattern) {
