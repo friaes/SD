@@ -20,11 +20,11 @@ public class ServerMain {
 	  /** Helper method to print debug messages. */
 	  private static void debug(String debugMessage) {
 		  if (DEBUG_FLAG)
-			  System.err.print("[DEBUG] " + debugMessage);
+			  System.err.print("[DEBUG] " + debugMessage + "\n");
 	  }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-		System.out.println(ServerMain.class.getSimpleName());
+		debug(ServerMain.class.getSimpleName());
 
 		if ((args.length == 3) && args[2].equals("-debug"))
 			DEBUG_FLAG = true;

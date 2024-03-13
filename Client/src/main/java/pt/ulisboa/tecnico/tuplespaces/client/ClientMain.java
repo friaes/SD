@@ -49,7 +49,10 @@ public class ClientMain {
         for (int i = 0; i < numServers; i++){
             if (targets.get(i) != null)
                 debug("Target: " + targets.get(i) + "\n");
-            else return;
+            else {
+                System.err.println("Not all servers are working");
+                return;
+            }
         }
 
         ClientService service = new ClientService(numServers, targets, DEBUG_FLAG);
@@ -60,7 +63,7 @@ public class ClientMain {
     }
 
     public static String lookupDNS(String qualifier, String service){
-        String result = null;
+        String result = new String();
         try {
             NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
             result = stubDNS.lookup(request).getAddress();

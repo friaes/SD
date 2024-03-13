@@ -22,6 +22,12 @@ public class ResponseCollector {
         return res;
     }
 
+    synchronized public String getString() {
+        if (collectedResponses.size() != 0)
+            return collectedResponses.get(0);
+        return null;
+    }
+
     synchronized public void waitUntilAllReceived(int n) throws InterruptedException {
         while (collectedResponses.size() < n) 
             wait();

@@ -20,7 +20,6 @@ public class ClientService {
     private int numServers = 0;
 
     OrderedDelayer delayer;
-    ResponseCollector c;
 
     public ClientService(int numServers, List<String> targets, boolean debug) {
         this.DEBUG_FLAG = debug;  
@@ -35,12 +34,11 @@ public class ClientService {
         /* The delayer can be used to inject delays to the sending of requests to the 
             different servers, according to the per-server delays that have been set  */
         delayer = new OrderedDelayer(numServers);
-        c = new ResponseCollector();
     }
 
     public void debug(String debugMessage){
 		if (DEBUG_FLAG)
-			System.err.print("[DEBUG] " + debugMessage);
+			System.err.print("[DEBUG] " + debugMessage + "\n");
 	}
 
     /* This method allows the command processor to set the request delay assigned to a given server */
@@ -60,34 +58,37 @@ public class ClientService {
     }
 
     public void put(String tuple) {
+        ResponseCollector c = new ResponseCollector();
         PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
         debug(request.toString());
 
         for (Integer id : delayer)
-		    this.stubs[id].put(request, new PutObserver(c));
-
+		    this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
         try {
             c.waitUntilAllReceived(numServers);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        
+
+        debug(c.getStrings());
     }
 
     public String read(String pattern) {
+        ResponseCollector c = new ResponseCollector();
         ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
         debug(request.toString());
 
         for (Integer id : delayer) 
-            this.stubs[id].read(request, new ReadObserver(c));
+            this.stubs[id].read(request, new ReadObserver(c, DEBUG_FLAG));
             
         try {
             c.waitUntilAllReceived(1);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        debug(c.getStrings());
 
-        return c.getStrings();
+        return c.getString();
     }
 
     public String take(String pattern) {

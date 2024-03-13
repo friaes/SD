@@ -96,6 +96,7 @@ class NameServer:
             debug(str("service - " + service), DEBUG_FLAG)
             debug(str("qualifier - " + qualifier), DEBUG_FLAG)
             debug(str("address - " + address), DEBUG_FLAG)
+            debug("",DEBUG_FLAG)
             server_entry = ServerEntry(qualifier, address)
             service_entry = ServiceEntry(service)
             service_entry.add_server_entry(server_entry)
@@ -113,6 +114,7 @@ class NameServer:
         debug("args:", DEBUG_FLAG)
         debug(str("service - " + service), DEBUG_FLAG)
         debug(str("qualifier - " + qualifier), DEBUG_FLAG)
+        debug("",DEBUG_FLAG)
         if service in self.service_entries: 
             for saddress, squalifier in self.service_entries[service].get_server_entries().items():
                 if squalifier == qualifier:
@@ -128,6 +130,7 @@ class NameServer:
         debug("args:", DEBUG_FLAG)
         debug(str("service - " + service), DEBUG_FLAG)
         debug(str("address - " + address), DEBUG_FLAG)
+        debug("",DEBUG_FLAG)
         try:
             self.delete_server(service, address)
         except DeleteError:

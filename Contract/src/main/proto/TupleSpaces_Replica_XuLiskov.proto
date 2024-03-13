@@ -6,6 +6,7 @@ message PutRequest {
   string newTuple = 1;
 }
 message PutResponse {
+  string ack = 1;
 }
 
 message ReadRequest {
@@ -13,6 +14,7 @@ message ReadRequest {
 }
 message ReadResponse {
   string result = 1;
+  string ack = 2;
 }
 
 message TakePhase1Request {
