@@ -8,10 +8,12 @@ public class ServerState {
   private class TupleStruct {
     private String tuple;
     private boolean flag;
-    private int clientId;
+    private Integer clientId;
 
     public TupleStruct(String tuple) {
         this.tuple = tuple;
+        this.flag = false;
+        this.clientId = null;
     }
 
     public String getTuple(){
@@ -30,17 +32,15 @@ public class ServerState {
       this.flag = flag;
     }
 
-    public void setClientId(int clientId){
+    public void setClientId(Integer clientId){
       this.clientId = clientId;
     }
   }
-
 
   private List<TupleStruct> tuples;
 
   public ServerState() {
     this.tuples = new ArrayList<TupleStruct>();
-
   }
 
   public synchronized void put(String tuple) {
@@ -72,26 +72,47 @@ public class ServerState {
     return tupleStruct.getTuple();
   }
 
-  public synchronized String take(String pattern) {
+  public synchronized String takePhase1(String pattern, Integer clientId) {
     TupleStruct tupleStruct = getMatchingTuple(pattern);
-    while (tupleStruct.getTuple() == null){
-      try {
-        wait(); // wait until the tuple is inserted
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-      tupleStruct = getMatchingTuple(pattern);
+    if (tupleStruct == null) {
+      return "REFUSED";
     }
-    tuples.remove(tupleStruct);
+
+    if (tupleStruct.getFlag() && tupleStruct.getClientId() != null) {
+      if (tupleStruct.getClientId().equals(clientId))
+        return tupleStruct.getTuple();
+      return "LOCKED";
+    }
+
+    tupleStruct.setFlag(true);
+    tupleStruct.setClientId(clientId);
     return tupleStruct.getTuple();
   }
+
+  public synchronized void takePhase1Release(String pattern, Integer clientId) {
+    TupleStruct tupleStruct = getMatchingTuple(pattern);
+    if (tupleStruct == null) return;
+    if (tupleStruct.getClientId().equals(clientId)) {
+      tupleStruct.setFlag(false);
+      tupleStruct.setClientId(null);
+    }
+  }
+
+  public synchronized void takePhase2(String pattern, Integer clientId) {
+    TupleStruct tupleStruct = getMatchingTuple(pattern);
+    if (tupleStruct == null) return;
+    if (tupleStruct.getClientId() .equals(clientId)) {
+      tuples.remove(tupleStruct);
+    }
+  }
+
 
   public synchronized List<String> getTupleSpacesState() {
     List<String> tuple_list = new ArrayList<String>();
     for (TupleStruct tupleStruct : this.tuples)
       tuple_list.add(tupleStruct.getTuple());
     
-      return tuple_list;
+    return tuple_list;
   }
 
 }

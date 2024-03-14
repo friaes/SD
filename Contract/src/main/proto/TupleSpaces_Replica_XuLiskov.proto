@@ -22,10 +22,11 @@ message TakePhase1Request {
   int32 clientId = 2;
 }
 message TakePhase1Response {
-  repeated string reservedTuples = 1;
+  string reservedTuple = 1;
 }
 
 message TakePhase1ReleaseRequest {
+  string reservedTuple = 1;
   int32 clientId = 2;
 }
 

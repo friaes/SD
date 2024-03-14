@@ -19,6 +19,7 @@ public class ClientMain {
     private final static ManagedChannel channelDNS = ManagedChannelBuilder.forTarget(targetDNS).usePlaintext().build();
     private final static NameServerServiceGrpc.NameServerServiceBlockingStub stubDNS = NameServerServiceGrpc.newBlockingStub(channelDNS);
     static final int numServers = 3;
+    private static int clientId;
 
     /* Helper method to print debug messages.*/
 	private static void debug(String debugMessage) {
@@ -28,9 +29,14 @@ public class ClientMain {
 
     public static void main(String[] args) {
 
-        if ((args.length == 1) && args[0].equals("-debug"))
+        if ((args.length >= 1) && args[0].equals("-debug"))
 			DEBUG_FLAG = true;
-
+        if (args.length >= 2) clientId = Integer.parseInt(args[1]);
+        else if (args.length == 1) clientId = Integer.parseInt(args[0]);
+        else {
+            System.err.println("No client Id provided.\n");
+            return;
+        }
         debug(ClientMain.class.getSimpleName());
 
         // receive and print arguments
@@ -55,7 +61,7 @@ public class ClientMain {
             }
         }
 
-        ClientService service = new ClientService(numServers, targets, DEBUG_FLAG);
+        ClientService service = new ClientService(numServers, targets, DEBUG_FLAG, clientId);
         CommandProcessor parser = new CommandProcessor(service);
         parser.parseInput();
         service.shutdown();

@@ -24,6 +24,16 @@ public class ResponseCollector {
         return collectedResponses;
     }
 
+    synchronized public ArrayList<String> getStringsList() {
+        return collectedResponses;
+    }
+
+    synchronized public ArrayList<String> getStrings() {
+        if (!collectedResponses.isEmpty())
+            return collectedResponses;
+        return null;
+    }
+
     synchronized public String getString() {
         if (!collectedResponses.isEmpty())
             return collectedResponses.get(0);
