@@ -59,23 +59,57 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 		// Notify the client that the operation has been completed.
 		responseObserver.onCompleted();
     }
-	/*
+
     @Override
-	public void take(TakePhase1ReleaseRequest request, StreamObserver<TakePhase1ReleaseResponse> responseObserver) {
+	public void takePhase1(TakePhase1Request request, StreamObserver<TakePhase1Response> responseObserver) {
 
 		debug("Request: " + request.toString());
         String searchPattern = request.getSearchPattern();
+		Integer clientId = request.getClientId();
 
-        TakeResponse response = TakeResponse.newBuilder().setResult(state.take(searchPattern)).build();
-		debug("Response: " + response.getResult());
-
+        TakePhase1Response response = TakePhase1Response.newBuilder().setReservedTuple(state.takePhase1(searchPattern, clientId)).build();
+		debug("Response: " + response.getReservedTuple());
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
 		// Notify the client that the operation has been completed.
 		responseObserver.onCompleted();
     }
-	*/
+
+	@Override
+	public void takePhase1Release(TakePhase1ReleaseRequest request, StreamObserver<TakePhase1ReleaseResponse> responseObserver) {
+
+		debug("Request: " + request.toString());
+		String reservedTuple = request.getReservedTuple();
+		Integer clientId = request.getClientId();
+
+		state.takePhase1Release(reservedTuple, clientId);
+		TakePhase1ReleaseResponse response = TakePhase1ReleaseResponse.newBuilder().build();
+		debug("Response being sent..." );
+
+		// Send a single response through the stream.
+		responseObserver.onNext(response);
+		// Notify the client that the operation has been completed.
+		responseObserver.onCompleted();
+	}
+
+	@Override
+	public void takePhase2(TakePhase2Request request, StreamObserver<TakePhase2Response> responseObserver) {
+
+		debug("Request: " + request.toString());
+		String tuple = request.getTuple();
+		Integer clientId = request.getClientId();
+
+		state.takePhase2(tuple, clientId);
+		TakePhase2Response response = TakePhase2Response.newBuilder().build();
+		debug("Response being sent...");
+
+		// Send a single response through the stream.
+		responseObserver.onNext(response);
+		// Notify the client that the operation has been completed.
+		responseObserver.onCompleted();
+	}
+
     @Override
 	public void getTupleSpacesState(getTupleSpacesStateRequest request, StreamObserver<getTupleSpacesStateResponse> responseObserver) {
 

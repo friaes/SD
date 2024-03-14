@@ -18,12 +18,14 @@ public class ClientService {
     private final ManagedChannel[] channels;
     private final TupleSpacesReplicaGrpc.TupleSpacesReplicaStub[] stubs;
     private int numServers = 0;
+    private final int id;
 
     OrderedDelayer delayer;
 
-    public ClientService(int numServers, List<String> targets, boolean debug) {
-        this.DEBUG_FLAG = debug;  
+    public ClientService(int numServers, List<String> targets, boolean debug, int id) {
+        this.DEBUG_FLAG = debug;
         this.numServers = numServers;
+        this.id = id;
         this.channels = new ManagedChannel[numServers];
         this.stubs = new TupleSpacesReplicaGrpc.TupleSpacesReplicaStub[numServers];
 
@@ -92,7 +94,96 @@ public class ClientService {
     }
 
     public String take(String pattern) {
-        return null;
+        ArrayList<String> reservedTuples = takePhase1(pattern);
+
+        if (reservedTuples.size() != 3) {
+            System.err.println("Unimplemented case no answer from one or more of the servers");
+            return "NO ANSWER";
+        }
+
+        /*while (reservedTuples.size() != 3) {
+                reservedTuples = takePhase1(pattern);
+            }
+        }*/
+        if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("REFUSED"))) {
+            debug("Unimplemented case tuple does not exist in one or more servers");
+            return "REFUSED";
+        }
+        if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("LOCKED"))) {
+            takePhase1Release(pattern);
+            debug("Unimplemented case tuple has been locked by another client in one or more servers");
+            return "LOCKED";
+            // take(pattern);
+        }
+        String anyTuple = reservedTuples.get(0);
+        if (reservedTuples.stream().allMatch(tuple -> tuple.equals(anyTuple))) {
+            takePhase2(anyTuple);
+        }
+        return anyTuple;
+
+    }
+
+    public ArrayList<String> takePhase1(String pattern) {
+        ResponseCollector c = new ResponseCollector();
+        TakePhase1Request request = TakePhase1Request.newBuilder()
+                .setSearchPattern(pattern)
+                .setClientId(id)
+                .build();
+
+        debug("takePhase1: " + request.toString());
+
+        for (Integer id : delayer)
+            this.stubs[id].takePhase1(request, new TakePhase1Observer(c, DEBUG_FLAG));
+
+        try {
+            c.waitUntilAllReceived(3);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        debug("takePhase1: " + c.getStrings());
+
+        return c.getStringsList();
+    }
+
+
+    public void takePhase1Release(String pattern) {
+        ResponseCollector c = new ResponseCollector();
+        TakePhase1ReleaseRequest request = TakePhase1ReleaseRequest.newBuilder()
+                .setReservedTuple(pattern)
+                .setClientId(id)
+                .build();
+
+        debug("takePhase1Release: " + request.toString());
+
+        for (Integer id : delayer)
+            this.stubs[id].takePhase1Release(request, new TakePhase1ReleaseObserver(c, DEBUG_FLAG));
+
+        try {
+            c.waitUntilAllReceived(3);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        debug("takePhase1Release: All acks received");
+    }
+
+    public void takePhase2(String pattern) {
+        ResponseCollector c = new ResponseCollector();
+        TakePhase2Request request = TakePhase2Request.newBuilder()
+                .setTuple(pattern)
+                .setClientId(id)
+                .build();
+
+        debug("takePhase2: " + request.toString());
+
+        for (Integer id : delayer)
+            this.stubs[id].takePhase2(request, new TakePhase2Observer(c, DEBUG_FLAG));
+
+        try {
+            c.waitUntilAllReceived(3);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        debug("takePhase2: All acks received");
     }
 
     public List<String> getTupleSpacesState(Integer id) {
