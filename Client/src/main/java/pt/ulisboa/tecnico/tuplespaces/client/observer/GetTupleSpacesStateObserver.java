@@ -4,7 +4,7 @@ import io.grpc.stub.StreamObserver;
 import pt.ulisboa.tecnico.tuplespaces.client.ResponseCollector;
 import pt.ulisboa.tecnico.tuplespaces.replicaXuLiskov.contract.*;
 
-public class PutObserver implements StreamObserver<PutResponse>{
+public class GetTupleSpacesStateObserver implements StreamObserver<getTupleSpacesStateResponse>{
 
     private static boolean DEBUG_FLAG = false;
     ResponseCollector collector;
@@ -15,15 +15,15 @@ public class PutObserver implements StreamObserver<PutResponse>{
             System.err.print("[DEBUG] " + debugMessage + "\n");
 	}
 
-    public PutObserver (ResponseCollector c, boolean debug) {
+    public GetTupleSpacesStateObserver (ResponseCollector c, boolean debug) {
         collector = c;
         DEBUG_FLAG = debug;
     }
 
     @Override
-    public void onNext(PutResponse r) {
-        collector.addString(r.getAck());
-        debug("Received response: " + r.getAck());
+    public void onNext(getTupleSpacesStateResponse r) {
+        collector.addAll(r.getTupleList());
+        debug("Received response: " + r.getTupleList());
     }
 
     @Override

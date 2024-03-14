@@ -70,7 +70,7 @@ public class ClientService {
             throw new RuntimeException(e);
         }
 
-        debug(c.getStrings());
+        debug(c.getResponses().toString());
     }
 
     public String read(String pattern) {
@@ -86,7 +86,7 @@ public class ClientService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        debug(c.getStrings());
+        debug(c.getResponses().toString());
 
         return c.getString();
     }
@@ -96,7 +96,19 @@ public class ClientService {
     }
 
     public List<String> getTupleSpacesState(Integer id) {
-        return null;        
+        ResponseCollector c = new ResponseCollector();
+        getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
+        
+        stubs[id].getTupleSpacesState(request, new GetTupleSpacesStateObserver(c, DEBUG_FLAG));
+
+        try {
+            c.waitUntilAllReceived(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        
+        debug(c.getResponses().toString());
+        return c.getResponses();       
     }
     
 }

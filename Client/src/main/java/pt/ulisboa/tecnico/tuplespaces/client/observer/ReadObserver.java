@@ -32,7 +32,5 @@ public class ReadObserver implements StreamObserver<ReadResponse>{
     }
 
     @Override
-    public void onCompleted() {
-        debug("Request completed");
-    }
+    public void onCompleted() {}
 }

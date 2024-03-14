@@ -58,18 +58,18 @@ public class ServerState {
   }
 
   public synchronized String read(String pattern) {
-    String tuple = getMatchingTuple(pattern).getTuple();
-    
-    while (tuple == null){
+    TupleStruct tupleStruct = getMatchingTuple(pattern);
+
+    while (tupleStruct == null){
       try {
         wait(); // wait until the tuple is inserted
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      tuple = getMatchingTuple(pattern).getTuple();
+      tupleStruct = getMatchingTuple(pattern);
     }
 
-    return tuple;
+    return tupleStruct.getTuple();
   }
 
   public synchronized String take(String pattern) {

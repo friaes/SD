@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.tuplespaces.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ResponseCollector {
     ArrayList<String> collectedResponses;
@@ -14,16 +15,17 @@ public class ResponseCollector {
         notifyAll();
     }
 
-    synchronized public String getStrings() {
-        String res = new String();
-        for (String s : collectedResponses) {
-            res = res.concat(s);
-        }
-        return res;
+    synchronized public void addAll(List<String> s) {
+        collectedResponses.addAll(s);
+        notifyAll();
+    }
+
+    synchronized public List<String> getResponses() {
+        return collectedResponses;
     }
 
     synchronized public String getString() {
-        if (collectedResponses.size() != 0)
+        if (!collectedResponses.isEmpty())
             return collectedResponses.get(0);
         return null;
     }

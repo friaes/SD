@@ -134,11 +134,12 @@ public class CommandProcessor {
             return;
         }
         int qualifier = indexOfServerQualifier(split[1]);
-        if (qualifier == -1)
-          System.out.println("Invalid server qualifier");
+        if (qualifier == -1) {
+            System.out.println("Invalid server qualifier");
+            return;
+        }
         
-        List<String> allTuples = new ArrayList<String>();
-        allTuples = clientService.getTupleSpacesState(qualifier);
+        List<String> allTuples = clientService.getTupleSpacesState(qualifier);
         // get the tuple spaces state
         System.out.println("OK");
         System.out.println(Arrays.toString(allTuples.toArray()));
@@ -174,8 +175,10 @@ public class CommandProcessor {
           return;
         }
         int qualifier = indexOfServerQualifier(split[1]);
-        if (qualifier == -1)
+        if (qualifier == -1) {
           System.out.println("Invalid server qualifier");
+          return;
+        }
   
         Integer time;
   
