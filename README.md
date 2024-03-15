@@ -6,13 +6,6 @@ Distributed Systems Project 2024
   
 **Difficulty level: I am Death incarnate!**
 
-
-### Code Identification
-
-In all source files (namely in the *groupId*s of the POMs), replace __GXX__ with your group identifier. The group
-identifier consists of either A or T followed by the group number - always two digits. This change is important for 
-code dependency management, to ensure your code runs using the correct components and not someone else's.
-
 ### Team Members
 
 
@@ -24,7 +17,7 @@ code dependency management, to ensure your code runs using the correct component
 
 ## Getting Started
 
-The overall system is made up of several modules. The different types of servers are located in _ServerX_ (where X denotes stage 1, 2 or 3). 
+The overall system is made up of several modules. The different types of servers are located in _ServerRX_ (where X denotes stage 1, 2 or 3). 
 The clients is in _Client_.
 The definition of messages and services is in _Contract_. The future naming server
 is in _NamingServer_.
