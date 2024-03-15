@@ -64,22 +64,22 @@ python3 server.py [-debug]
 
 ### TupleSpaces Servers
 
-To compile and run from project root:
+To compile and run the three servers from project root, open three terminals and do:
 
-Open first terminal
+First terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2001 A [-debug]"
 ```
-Open second terminal
+Second terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2002 B [-debug]"
 ```
-Open third terminal
+Third terminal
 ```s
 cd ServerR2
-mvn compile exec:java -Dexec.args="2002 C [-debug]"
+mvn compile exec:java -Dexec.args="2003 C [-debug]"
 ```
 
 ### TupleSpaces Client
