@@ -34,6 +34,7 @@ To confirm that you have them installed and which versions they are, run in the 
 ```s
 javac -version
 mvn -version
+python3 --version
 ```
 
 ### Installation
@@ -42,9 +43,23 @@ To compile and install all modules from project root:
 
 ```s
 mvn clean install
-cd Contract
-mvn exec:exec
 ```
+Then create and activate the virtual environment:
+  - Linux
+  ```s
+  python -m venv .venv
+  source .venv/bin/activate
+  ```
+  - Windows
+  ```s
+  python -m venv .venv
+  .venv\Scripts\activate
+  ```
+  Then within the environment do:
+  ```s
+  cd Contract
+  mvn exec:exec
+  ```
 
 ### Name Server
 
