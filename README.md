@@ -34,6 +34,7 @@ To confirm that you have them installed and which versions they are, run in the 
 ```s
 javac -version
 mvn -version
+python3 --version
 ```
 
 ### Installation
@@ -42,9 +43,23 @@ To compile and install all modules from project root:
 
 ```s
 mvn clean install
-cd Contract
-mvn exec:exec
 ```
+Then create and activate the virtual environment:
+  - Linux
+  ```s
+  python -m venv .venv
+  source .venv/bin/activate
+  ```
+  - Windows
+  ```s
+  python -m venv .venv
+  .venv\Scripts\activate
+  ```
+  Then within the environment do:
+  ```s
+  cd Contract
+  mvn exec:exec
+  ```
 
 ### Name Server
 
@@ -59,17 +74,17 @@ python3 server.py [-debug]
 
 To compile and run the three servers from project root, open three terminals and do:
 
-First terminal
+- First terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2001 A [-debug]"
 ```
-Second terminal
+- Second terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2002 B [-debug]"
 ```
-Third terminal
+- Third terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2003 C [-debug]"
