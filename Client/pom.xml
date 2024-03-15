@@ -21,6 +21,7 @@
 		<version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
 
 		<mainclass>pt.ulisboa.tecnico.tuplespaces.client.ClientMain</mainclass>
+		<server.clientId>1</server.clientId>
 		<server.host>localhost</server.host>
 		<server.port>2001</server.port>
 		<server.service>TupleSpaces</server.service>
@@ -70,6 +71,7 @@
 				<configuration>
 					<mainClass>${mainclass}</mainClass>
 					<arguments>
+						<argument>${server.clientId}</argument>
 						<argument>${server.host}</argument>
 						<argument>${server.port}</argument>
 						<argument>${server.service}</argument>

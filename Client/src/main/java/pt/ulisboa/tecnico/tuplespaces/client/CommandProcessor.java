@@ -138,13 +138,12 @@ public class CommandProcessor {
             System.out.println("Invalid server qualifier");
             return;
         }
-        
+
+        System.out.println("OK");
         List<String> allTuples = clientService.getTupleSpacesState(qualifier);
         // get the tuple spaces state
-        for (String element: allTuples) {
-            System.out.println(element);
-        }
-        System.out.println("OK");
+        System.out.println(allTuples.toString());
+        
         System.out.println();
 
     }
@@ -193,6 +192,7 @@ public class CommandProcessor {
         }
         // register delay <time> for when calling server <qualifier>
         this.clientService.setDelay(qualifier, time);
+        System.out.println("");
     }
 
     private void printUsage() {

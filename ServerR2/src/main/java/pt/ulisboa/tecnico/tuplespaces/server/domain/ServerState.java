@@ -59,7 +59,6 @@ public class ServerState {
 
   public synchronized String read(String pattern) {
     TupleStruct tupleStruct = getMatchingTuple(pattern);
-
     while (tupleStruct == null){
       try {
         wait(); // wait until the tuple is inserted

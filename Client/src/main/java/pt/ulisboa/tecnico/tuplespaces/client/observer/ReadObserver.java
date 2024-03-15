@@ -24,6 +24,7 @@ public class ReadObserver implements StreamObserver<ReadResponse>{
     public void onNext(ReadResponse r) {
         if (collector.getStrings().isEmpty())
             debug("Received response");
+        
         collector.addString(r.getResult());
     }
 

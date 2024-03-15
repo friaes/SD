@@ -21,9 +21,7 @@ public class ResponseCollector {
     }
 
     synchronized public ArrayList<String> getStrings() {
-        if (!collectedResponses.isEmpty())
-            return collectedResponses;
-        return null;
+        return collectedResponses;
     }
 
     synchronized public String getString() {
