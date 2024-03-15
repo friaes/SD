@@ -73,8 +73,13 @@ public class ServerState {
 
   public synchronized String takePhase1(String pattern, Integer clientId) {
     TupleStruct tupleStruct = getMatchingTuple(pattern);
-    if (tupleStruct == null) {
-      return "REFUSED";
+    while (tupleStruct == null){
+      try {
+        wait(); // wait until the tuple is inserted
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      tupleStruct = getMatchingTuple(pattern);
     }
 
     if (tupleStruct.getFlag() && tupleStruct.getClientId() != null) {
