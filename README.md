@@ -74,17 +74,17 @@ python3 server.py [-debug]
 
 To compile and run the three servers from project root, open three terminals and do:
 
-First terminal
+- First terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2001 A [-debug]"
 ```
-Second terminal
+- Second terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2002 B [-debug]"
 ```
-Third terminal
+- Third terminal
 ```s
 cd ServerR2
 mvn compile exec:java -Dexec.args="2003 C [-debug]"
