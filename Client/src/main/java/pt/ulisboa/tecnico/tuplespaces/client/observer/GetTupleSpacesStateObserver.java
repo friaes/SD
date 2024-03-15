@@ -23,7 +23,10 @@ public class GetTupleSpacesStateObserver implements StreamObserver<getTupleSpace
     @Override
     public void onNext(getTupleSpacesStateResponse r) {
         debug("Received response: " + r.getTupleList());
-        collector.addAll(r.getTupleList());
+        if (r.getTupleList().size() == 0)
+            collector.addString("empty");
+        else
+            collector.addAll(r.getTupleList());
     }
 
     @Override
@@ -32,5 +35,6 @@ public class GetTupleSpacesStateObserver implements StreamObserver<getTupleSpace
     }
 
     @Override
-    public void onCompleted() {}
+    public void onCompleted() {
+    }
 }

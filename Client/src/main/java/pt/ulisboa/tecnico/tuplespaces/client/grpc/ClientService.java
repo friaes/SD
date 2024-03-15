@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.tuplespaces.client.grpc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -71,7 +72,7 @@ public class ClientService {
             throw new RuntimeException(e);
         }
 
-        debug(c.getStringsList().toString());
+        debug(c.getStrings().toString());
     }
 
     public String read(String pattern) {
@@ -86,12 +87,12 @@ public class ClientService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        debug(c.getStringsList().toString());
+        debug(c.getStrings().toString());
 
         return c.getString();
     }
 
-    public String take(String pattern) {
+    public String take(String pattern, Integer tries) {
         ArrayList<String> reservedTuples = takePhase1(pattern);
 
         if (reservedTuples.size() != 3) {
@@ -112,14 +113,24 @@ public class ClientService {
             takePhase1Release(pattern);
             debug("Tuples: " + reservedTuples.toString());
             debug("Unimplemented case tuple has been locked by another client in one or more servers");
-            return "LOCKED";
-            // take(pattern);
+            Random random = new Random();
+            setDelay(0, random.nextInt(5)*tries);
+            setDelay(1, random.nextInt(5)*tries);
+            setDelay(2, random.nextInt(5)*tries);
+            return take(pattern, ++tries);
+
+        } else {
+            String anyTuple = reservedTuples.get(0);
+            if (reservedTuples.stream().allMatch(tuple -> tuple.equals(anyTuple))) {
+                takePhase2(anyTuple);
+            }
+            if (tries > 1){
+                setDelay(0, 0);
+                setDelay(1, 0);
+                setDelay(2, 0);
+            }
+            return anyTuple;
         }
-        String anyTuple = reservedTuples.get(0);
-        if (reservedTuples.stream().allMatch(tuple -> tuple.equals(anyTuple))) {
-            takePhase2(anyTuple);
-        }
-        return anyTuple;
 
     }
 
@@ -142,7 +153,7 @@ public class ClientService {
         }
         debug("takePhase1: " + c.getStrings());
 
-        return c.getStringsList();
+        return c.getStrings();
     }
 
 
@@ -199,7 +210,7 @@ public class ClientService {
             throw new RuntimeException(e);
         }
         
-        return c.getStringsList();       
+        return c.getStrings();       
     }
     
 }

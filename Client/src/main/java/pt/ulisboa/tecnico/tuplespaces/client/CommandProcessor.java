@@ -118,7 +118,7 @@ public class CommandProcessor {
         
         // get the tuple
         String pattern = split[1];
-        String tuple = clientService.take(pattern);
+        String tuple = clientService.take(pattern, 1);
 
         // take the tuple
         System.out.println("OK");
@@ -141,10 +141,10 @@ public class CommandProcessor {
         
         List<String> allTuples = clientService.getTupleSpacesState(qualifier);
         // get the tuple spaces state
-        System.out.println("OK");
         for (String element: allTuples) {
             System.out.println(element);
         }
+        System.out.println("OK");
         System.out.println();
 
     }

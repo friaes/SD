@@ -20,10 +20,6 @@ public class ResponseCollector {
         notifyAll();
     }
 
-    synchronized public ArrayList<String> getStringsList() {
-        return collectedResponses;
-    }
-
     synchronized public ArrayList<String> getStrings() {
         if (!collectedResponses.isEmpty())
             return collectedResponses;
