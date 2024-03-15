@@ -120,7 +120,10 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 		// You must use a builder to construct a new Protobuffer object
 		getTupleSpacesStateResponse response = getTupleSpacesStateResponse.newBuilder().addAllTuple(state.getTupleSpacesState()).build();
 		debug("GetTupleSpacesState:\n");
-		debug("   Response: " + response.toString());
+		if (response.getTupleList().isEmpty())
+			debug("   Response: empty\n");
+		else 
+			debug("   Response: " + response.toString());
 		debug("\n");
 		// Use responseObserver to send a single response back
 		responseObserver.onNext(response);

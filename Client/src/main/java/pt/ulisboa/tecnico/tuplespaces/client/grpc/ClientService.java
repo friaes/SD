@@ -100,15 +100,6 @@ public class ClientService {
             return "NO ANSWER";
         }
 
-        /*while (reservedTuples.size() != 3) {
-                reservedTuples = takePhase1(pattern);
-            }
-        }*/
-        if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("REFUSED"))) {
-            debug("Tuples: " + reservedTuples.toString());
-            debug("Unimplemented case tuple does not exist in one or more servers");
-            return "REFUSED";
-        }
         if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("LOCKED"))) {
             takePhase1Release(pattern);
             debug("Tuples: " + reservedTuples.toString());
