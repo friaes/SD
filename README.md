@@ -62,13 +62,24 @@ cd NameServer
 python3 server.py [-debug]
 ```
 
-### TupleSpaces Server
+### TupleSpaces Servers
 
-To compile and run from project root:
+To compile and run the three servers from project root, open three terminals and do:
 
+First terminal
 ```s
-cd ServerR1
+cd ServerR2
 mvn compile exec:java -Dexec.args="2001 A [-debug]"
+```
+Second terminal
+```s
+cd ServerR2
+mvn compile exec:java -Dexec.args="2002 B [-debug]"
+```
+Third terminal
+```s
+cd ServerR2
+mvn compile exec:java -Dexec.args="2003 C [-debug]"
 ```
 
 ### TupleSpaces Client
@@ -77,7 +88,7 @@ To compile and run from project root:
 
 ```s
 cd Client
-mvn compile exec:java [-Dexec.args="-debug"]
+mvn compile exec:java -Dexec.args="<id> [-debug]"
 ```
 
 
