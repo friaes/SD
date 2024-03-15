@@ -22,8 +22,8 @@ public class PutObserver implements StreamObserver<PutResponse>{
 
     @Override
     public void onNext(PutResponse r) {
-        collector.addString(r.getAck());
-        debug("Received response: " + r.getAck());
+        debug("Received response");
+        collector.addString("empty");
     }
 
     @Override

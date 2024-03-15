@@ -32,7 +32,5 @@ public class TakePhase1ReleaseObserver implements StreamObserver<TakePhase1Relea
     }
 
     @Override
-    public void onCompleted() {
-        debug("Request completed");
-    }
+    public void onCompleted() {}
 }

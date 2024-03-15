@@ -20,10 +20,6 @@ public class ResponseCollector {
         notifyAll();
     }
 
-    synchronized public List<String> getResponses() {
-        return collectedResponses;
-    }
-
     synchronized public ArrayList<String> getStringsList() {
         return collectedResponses;
     }

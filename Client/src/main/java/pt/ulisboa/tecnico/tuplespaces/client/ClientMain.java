@@ -73,7 +73,6 @@ public class ClientMain {
         try {
             NameServer.LookupRequest request = NameServer.LookupRequest.newBuilder().setQualifier(qualifier).setService(service).build();
             result = stubDNS.lookup(request).getAddress();
-            debug(result.toString() + "\n");
         } catch (StatusRuntimeException e) {
 			System.out.println("Caught Exception with description: " + e.getStatus().getDescription());
 		}

@@ -29,14 +29,14 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 	public void put(PutRequest request, StreamObserver<PutResponse> responseObserver) {
 		// StreamObserver is used to represent the gRPC stream between the server and
 		// client in order to send the appropriate responses (or errors, if any occur).
-
-		debug("Request: " + request.toString());
+		debug("Put:\n");
+		debug("   Request: " + request.toString());
         String newTuple = request.getNewTuple();
 
         state.put(newTuple);
 
-		PutResponse response = PutResponse.newBuilder().setAck("ACK ").build();
-		debug("Response: " + response.toString());
+		PutResponse response = PutResponse.newBuilder().build();
+		debug("\n");
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
@@ -46,13 +46,13 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 
     @Override
 	public void read(ReadRequest request, StreamObserver<ReadResponse> responseObserver) {
-
-		debug("Request: " + request.toString());
+		debug("Read:\n");
+		debug("   Request: " + request.toString());
         String searchPattern = request.getSearchPattern();
 
-        ReadResponse response = ReadResponse.newBuilder().setResult(state.read(searchPattern)).setAck("ACK").build();
-		debug("Response: " + response.toString());
-
+        ReadResponse response = ReadResponse.newBuilder().setResult(state.read(searchPattern)).build();
+		debug("   Response: " + response.toString());
+		debug("\n");
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
@@ -62,14 +62,15 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 
     @Override
 	public void takePhase1(TakePhase1Request request, StreamObserver<TakePhase1Response> responseObserver) {
-
-		debug("Request: " + request.toString());
+		debug("TakePhase1:\n");
+		debug("   Request: searchPattern: \"" + request.getSearchPattern() + "\"\n");
+		debug("            clientId: \"" + request.getClientId() + "\"\n");
         String searchPattern = request.getSearchPattern();
 		Integer clientId = request.getClientId();
 
         TakePhase1Response response = TakePhase1Response.newBuilder().setReservedTuple(state.takePhase1(searchPattern, clientId)).build();
-		debug("Response: " + response.getReservedTuple());
-
+		debug("   Response: " + response.toString());
+		debug("\n");
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
 		// Notify the client that the operation has been completed.
@@ -78,15 +79,16 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 
 	@Override
 	public void takePhase1Release(TakePhase1ReleaseRequest request, StreamObserver<TakePhase1ReleaseResponse> responseObserver) {
-
-		debug("Request: " + request.toString());
+		debug("TakePhase1Release:\n");
+		debug("   Request: reservedTuple: \"" + request.getReservedTuple() + "\"\n");
+		debug("            clientId: \"" + request.getClientId() + "\"\n");
 		String reservedTuple = request.getReservedTuple();
 		Integer clientId = request.getClientId();
 
 		state.takePhase1Release(reservedTuple, clientId);
 		TakePhase1ReleaseResponse response = TakePhase1ReleaseResponse.newBuilder().build();
-		debug("Response being sent..." );
-
+		debug("   Response being sent...\n" );
+		debug("\n");
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
 		// Notify the client that the operation has been completed.
@@ -95,14 +97,16 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 
 	@Override
 	public void takePhase2(TakePhase2Request request, StreamObserver<TakePhase2Response> responseObserver) {
-
-		debug("Request: " + request.toString());
+		debug("TakePhase2:\n");
+		debug("   Request: tuple: \"" + request.getTuple() + "\"\n");
+		debug("            clientId: \"" + request.getClientId() + "\"\n");
 		String tuple = request.getTuple();
 		Integer clientId = request.getClientId();
 
 		state.takePhase2(tuple, clientId);
 		TakePhase2Response response = TakePhase2Response.newBuilder().build();
-		debug("Response being sent...");
+		debug("   Response being sent...\n");
+		debug("\n");
 
 		// Send a single response through the stream.
 		responseObserver.onNext(response);
@@ -113,11 +117,11 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
     @Override
 	public void getTupleSpacesState(getTupleSpacesStateRequest request, StreamObserver<getTupleSpacesStateResponse> responseObserver) {
 
-		debug("Request: " + request.toString());
 		// You must use a builder to construct a new Protobuffer object
 		getTupleSpacesStateResponse response = getTupleSpacesStateResponse.newBuilder().addAllTuple(state.getTupleSpacesState()).build();
-		debug("Response: " + response.toString());
-
+		debug("GetTupleSpacesState:\n");
+		debug("   Response: " + response.toString());
+		debug("\n");
 		// Use responseObserver to send a single response back
 		responseObserver.onNext(response);
 

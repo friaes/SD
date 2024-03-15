@@ -22,8 +22,8 @@ public class GetTupleSpacesStateObserver implements StreamObserver<getTupleSpace
 
     @Override
     public void onNext(getTupleSpacesStateResponse r) {
-        collector.addAll(r.getTupleList());
         debug("Received response: " + r.getTupleList());
+        collector.addAll(r.getTupleList());
     }
 
     @Override

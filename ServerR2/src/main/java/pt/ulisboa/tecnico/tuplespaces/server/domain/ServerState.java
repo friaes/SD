@@ -101,7 +101,7 @@ public class ServerState {
   public synchronized void takePhase2(String pattern, Integer clientId) {
     TupleStruct tupleStruct = getMatchingTuple(pattern);
     if (tupleStruct == null) return;
-    if (tupleStruct.getClientId() .equals(clientId)) {
+    if (tupleStruct.getClientId().equals(clientId)) {
       tuples.remove(tupleStruct);
     }
   }

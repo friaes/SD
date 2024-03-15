@@ -62,7 +62,6 @@ public class ClientService {
     public void put(String tuple) {
         ResponseCollector c = new ResponseCollector();
         PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
-        debug(request.toString());
 
         for (Integer id : delayer)
 		    this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
@@ -72,14 +71,13 @@ public class ClientService {
             throw new RuntimeException(e);
         }
 
-        debug(c.getResponses().toString());
+        debug(c.getStringsList().toString());
     }
 
     public String read(String pattern) {
         ResponseCollector c = new ResponseCollector();
         ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
-        debug(request.toString());
-
+        
         for (Integer id : delayer) 
             this.stubs[id].read(request, new ReadObserver(c, DEBUG_FLAG));
             
@@ -88,7 +86,7 @@ public class ClientService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        debug(c.getResponses().toString());
+        debug(c.getStringsList().toString());
 
         return c.getString();
     }
@@ -106,11 +104,13 @@ public class ClientService {
             }
         }*/
         if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("REFUSED"))) {
+            debug("Tuples: " + reservedTuples.toString());
             debug("Unimplemented case tuple does not exist in one or more servers");
             return "REFUSED";
         }
         if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("LOCKED"))) {
             takePhase1Release(pattern);
+            debug("Tuples: " + reservedTuples.toString());
             debug("Unimplemented case tuple has been locked by another client in one or more servers");
             return "LOCKED";
             // take(pattern);
@@ -173,7 +173,8 @@ public class ClientService {
                 .setClientId(id)
                 .build();
 
-        debug("takePhase2: " + request.toString());
+        debug("takePhase2: " + request.getTuple());
+        debug(String.valueOf(request.getClientId()));
 
         for (Integer id : delayer)
             this.stubs[id].takePhase2(request, new TakePhase2Observer(c, DEBUG_FLAG));
@@ -198,62 +199,7 @@ public class ClientService {
             throw new RuntimeException(e);
         }
         
-        debug(c.getResponses().toString());
-        return c.getResponses();       
+        return c.getStringsList();       
     }
     
 }
-/* Código Anterior
-public class ClientService {
-
-    private final ManagedChannel channelGrpc;
-    private final TupleSpacesGrpc.TupleSpacesBlockingStub stubGrpc;
-    private boolean DEBUG_FLAG = false;
-
-    public ClientService(String target, boolean debug) {
-
-        this.DEBUG_FLAG = debug;        
-        this.channelGrpc = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
-        this.stubGrpc = TupleSpacesGrpc.newBlockingStub(channelGrpc);
-    }
-
-    public void debug(String debugMessage){
-		if (DEBUG_FLAG)
-			System.err.print("[DEBUG] " + debugMessage);
-	}
-
-    public void shutdown() {
-        channelGrpc.shutdownNow();
-    }
-
-    public void put(String tuple) {
-        PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
-        debug(request.toString());
-		stubGrpc.put(request);
-    }
-
-    public String read(String pattern) {
-        ReadRequest request = ReadRequest.newBuilder().setSearchPattern(pattern).build();
-        debug(request.toString());
-        String result = stubGrpc.read(request).getResult();
-        debug("Result: " + result + "\n");
-        return result;
-    }
-
-    public String take(String pattern) {
-        TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).build();
-        debug(request.toString());
-        String result = stubGrpc.take(request).getResult();
-        debug("Result: " + result + "\n");
-        return result;
-    }
-
-    public List<String> getTupleSpacesState(String qualifier) {
-        getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
-        List<String> result = stubGrpc.getTupleSpacesState(request).getTupleList();
-        debug(result.toString() + "\n");
-        return result;        
-    }
-
-}**/
-

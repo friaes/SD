@@ -22,8 +22,9 @@ public class ReadObserver implements StreamObserver<ReadResponse>{
 
     @Override
     public void onNext(ReadResponse r) {
+        if (collector.getStringsList().isEmpty())
+            debug("Received response");
         collector.addString(r.getResult());
-        debug("Received response: " + r.getAck());
     }
 
     @Override

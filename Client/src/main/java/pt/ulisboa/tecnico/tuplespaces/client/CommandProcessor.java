@@ -142,7 +142,9 @@ public class CommandProcessor {
         List<String> allTuples = clientService.getTupleSpacesState(qualifier);
         // get the tuple spaces state
         System.out.println("OK");
-        System.out.println(Arrays.toString(allTuples.toArray()));
+        for (String element: allTuples) {
+            System.out.println(element);
+        }
         System.out.println();
 
     }
