@@ -109,106 +109,27 @@ public class ClientService {
         return c.getString();
     }
     
-    public String take(String pattern, Integer tries) {
+    public String take(String pattern) {
+        ResponseCollector c = new ResponseCollector();
+        Integer seq = getNewSequenceNumber();
+
+        if (seq != null) {
+            PutRequest request = PutRequest.newBuilder().setSearchPattern(pattern).setSeqNumber(seq).build();
+
+            for (Integer id : delayer)
+                this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
+            try {
+                c.waitUntilAllReceived(numServers);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            debug(c.getStrings().toString());
+        }
+    
         return null;
     }
-        /* 
-        ArrayList<String> reservedTuples = takePhase1(pattern);
-
-        if (reservedTuples.size() != 3) {
-            System.err.println("Unimplemented case no answer from one or more of the servers");
-            return "NO ANSWER";
-        }
-
-        if (reservedTuples.stream().anyMatch(tuple -> tuple.equals("LOCKED"))) {
-            takePhase1Release(pattern);
-            debug("Tuples: " + reservedTuples.toString());
-            debug("Unimplemented case tuple has been locked by another client in one or more servers");
-            Random random = new Random();
-            setDelay(0, random.nextInt(5)*tries);
-            setDelay(1, random.nextInt(5)*tries);
-            setDelay(2, random.nextInt(5)*tries);
-            return take(pattern, ++tries);
-
-        } else {
-            String anyTuple = reservedTuples.get(0);
-            if (reservedTuples.stream().allMatch(tuple -> tuple.equals(anyTuple))) {
-                takePhase2(anyTuple);
-            }
-            if (tries > 1){
-                setDelay(0, 0);
-                setDelay(1, 0);
-                setDelay(2, 0);
-            }
-            return anyTuple;
-        }
-
-    }
-
-    public ArrayList<String> takePhase1(String pattern) {
-        ResponseCollector c = new ResponseCollector();
-        TakePhase1Request request = TakePhase1Request.newBuilder()
-                .setSearchPattern(pattern)
-                .setClientId(id)
-                .build();
-
-        debug("takePhase1: " + request.toString());
-
-        for (Integer id : delayer)
-            this.stubs[id].takePhase1(request, new TakePhase1Observer(c, DEBUG_FLAG));
-
-        try {
-            c.waitUntilAllReceived(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        debug("takePhase1: " + c.getStrings());
-
-        return c.getStrings();
-    }
-
-
-    public void takePhase1Release(String pattern) {
-        ResponseCollector c = new ResponseCollector();
-        TakePhase1ReleaseRequest request = TakePhase1ReleaseRequest.newBuilder()
-                .setReservedTuple(pattern)
-                .setClientId(id)
-                .build();
-
-        debug("takePhase1Release: " + request.toString());
-
-        for (Integer id : delayer)
-            this.stubs[id].takePhase1Release(request, new TakePhase1ReleaseObserver(c, DEBUG_FLAG));
-
-        try {
-            c.waitUntilAllReceived(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        debug("takePhase1Release: All acks received");
-    }
-
-    public void takePhase2(String pattern) {
-        ResponseCollector c = new ResponseCollector();
-        TakePhase2Request request = TakePhase2Request.newBuilder()
-                .setTuple(pattern)
-                .setClientId(id)
-                .build();
-
-        debug("takePhase2: " + request.getTuple());
-        debug(String.valueOf(request.getClientId()));
-
-        for (Integer id : delayer)
-            this.stubs[id].takePhase2(request, new TakePhase2Observer(c, DEBUG_FLAG));
-
-        try {
-            c.waitUntilAllReceived(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        debug("takePhase2: All acks received");
-    }
-*/
+        
     public List<String> getTupleSpacesState(Integer id) {
         ResponseCollector c = new ResponseCollector();
         getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();

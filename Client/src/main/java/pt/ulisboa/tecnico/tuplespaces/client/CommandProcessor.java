@@ -118,7 +118,7 @@ public class CommandProcessor {
         
         // get the tuple
         String pattern = split[1];
-        String tuple = clientService.take(pattern, 1);
+        String tuple = clientService.take(pattern);
 
         // take the tuple
         System.out.println("OK");

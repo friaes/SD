@@ -14,15 +14,18 @@ public class ServerState {
   }
 
   public void put(String tuple, Integer seqNumber) {
-    waitSeqNumber(seqNumber);
-    
-    synchronized(this.tuples) {
-      tuples.add(tuple);
-      notifyAll();
-    }
+    synchronized (this) {
+        waitSeqNumber(seqNumber);
 
-    incrementSeqNumber();
-  }
+        synchronized (this.tuples) {
+            tuples.add(tuple);
+            this.tuples.notifyAll(); 
+        }
+
+        incrementSeqNumber();
+    }
+}
+
 
   private synchronized String getMatchingTuple(String pattern) {
     for (String tuple : this.tuples) {
@@ -50,22 +53,27 @@ public class ServerState {
     return tuple;
   }
 
-  public synchronized String take(String pattern) {
-    String tuple = getMatchingTuple(pattern);
+  public synchronized String take(String pattern, Integer seqNumber) {
+    synchronized (this) {
+      waitSeqNumber(seqNumber);
 
-    synchronized(this.tuples) {
-      while (tuple == null){
-        try {
-          wait(); // wait until the tuple is inserted
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
+      String tuple = getMatchingTuple(pattern);
+
+      synchronized(this.tuples) {
+        if (tuple == null) incrementSeqNumber();
+        while (tuple == null){
+          try {
+            wait(); // wait until the tuple is inserted
+          } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+          }
+          tuple = getMatchingTuple(pattern);
         }
-        tuple = getMatchingTuple(pattern);
+        this.tuples.remove(tuple);
       }
-      tuples.remove(tuple);
+      incrementSeqNumber();
+      return tuple;
     }
-
-    return tuple;
   }
 
   public synchronized List<String> getTupleSpacesState() {

@@ -15,7 +15,7 @@
 	<modules>
 		<module>Contract</module>
 		<module>Client</module>
-		<module>ServerR2</module>
+		<module>ServerR3</module>
 
 		<!-- This should only be used in phase 3
 		<module>ServerR3</module> -->
