@@ -81,8 +81,6 @@ public class ServerState {
   }
 
   private void waitSeqNumber(final int seqNumber) {
-    System.out.println("Sequence number: " + seqNumber);
-    System.out.println("Current: " + this.currentSeqNumber);
     synchronized (this) {
       while (this.currentSeqNumber != seqNumber) {
         try {

@@ -114,10 +114,10 @@ public class ClientService {
         Integer seq = getNewSequenceNumber();
 
         if (seq != null) {
-            PutRequest request = PutRequest.newBuilder().setSearchPattern(pattern).setSeqNumber(seq).build();
+            TakeRequest request = TakeRequest.newBuilder().setSearchPattern(pattern).setSeqNumber(seq).build();
 
             for (Integer id : delayer)
-                this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
+                this.stubs[id].take(request, new TakeObserver(c, DEBUG_FLAG));
             try {
                 c.waitUntilAllReceived(numServers);
             } catch (InterruptedException e) {
@@ -127,7 +127,7 @@ public class ClientService {
             debug(c.getStrings().toString());
         }
     
-        return null;
+        return c.getString();
     }
         
     public List<String> getTupleSpacesState(Integer id) {
