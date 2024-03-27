@@ -65,13 +65,16 @@ public class ServiceImpl extends TupleSpacesReplicaGrpc.TupleSpacesReplicaImplBa
 	@Override
 	public void take(TakeRequest request, StreamObserver<TakeResponse> responseObserver) {
 
-		debug("Request: " + request.toString());
+		debug("Take:\n");
+		debug("   Request: searchPattern: \"" + request.getSearchPattern() + "\"\n");
+		debug("            seqNumber: \"" + request.getSeqNumber() + "\"\n");
         String searchPattern = request.getSearchPattern();
 		Integer seqNumber = request.getSeqNumber();
 
 
         TakeResponse response = TakeResponse.newBuilder().setResult(state.take(searchPattern, seqNumber)).build();
-		debug("Response: " + response.getResult());
+		debug("   Response: " + response.toString());
+		debug("\n");
 
 
 		// Send a single response through the stream.
