@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.tuplespaces.client.observer;
 
 import io.grpc.stub.StreamObserver;
 import pt.ulisboa.tecnico.tuplespaces.client.ResponseCollector;
-import pt.ulisboa.tecnico.tuplespaces.replicaXuLiskov.contract.*;
+import pt.ulisboa.tecnico.tuplespaces.replicaTotalOrder.contract.*;
 
 public class GetTupleSpacesStateObserver implements StreamObserver<getTupleSpacesStateResponse>{
 

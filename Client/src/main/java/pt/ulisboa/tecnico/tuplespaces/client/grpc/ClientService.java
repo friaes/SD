@@ -6,18 +6,24 @@ import java.util.Random;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import pt.ulisboa.tecnico.tuplespaces.replicaXuLiskov.contract.*;
+import pt.ulisboa.tecnico.tuplespaces.replicaTotalOrder.contract.*;
+
+import pt.ulisboa.tecnico.sequencer.contract.*;
 import pt.ulisboa.tecnico.tuplespaces.client.observer.*;
 import pt.ulisboa.tecnico.tuplespaces.client.util.OrderedDelayer;
 import pt.ulisboa.tecnico.tuplespaces.client.ResponseCollector;
 
 public class ClientService {
 
-    /* TODO: This class should implement the front-end of the replicated TupleSpaces service 
-        (according to the Xu-Liskov algorithm)*/
     private boolean DEBUG_FLAG = false;
     private final ManagedChannel[] channels;
     private final TupleSpacesReplicaGrpc.TupleSpacesReplicaStub[] stubs;
+
+    /* Sequencer */
+    private final static String targetSequencer = "localhost:8080";
+    private final static ManagedChannel channelSequencer = ManagedChannelBuilder.forTarget(targetSequencer).usePlaintext().build();
+    private final static SequencerGrpc.SequencerBlockingStub stubSequencer = SequencerGrpc.newBlockingStub(channelSequencer);
+
     private int numServers = 0;
     private final int id;
 
@@ -62,17 +68,28 @@ public class ClientService {
 
     public void put(String tuple) {
         ResponseCollector c = new ResponseCollector();
-        PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).build();
+        Integer seq = getNewSequenceNumber();
 
-        for (Integer id : delayer)
-		    this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
-        try {
-            c.waitUntilAllReceived(numServers);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (seq != null) {
+            PutRequest request = PutRequest.newBuilder().setNewTuple(tuple).setSeqNumber(seq).build();
+
+            for (Integer id : delayer)
+                this.stubs[id].put(request, new PutObserver(c, DEBUG_FLAG));
+            try {
+                c.waitUntilAllReceived(numServers);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            debug(c.getStrings().toString());
         }
+    }
 
-        debug(c.getStrings().toString());
+    Integer getNewSequenceNumber() {
+        GetSeqNumberRequest request = GetSeqNumberRequest.newBuilder().build();
+        GetSeqNumberResponse response = this.stubSequencer.getSeqNumber(request);
+
+        return response.getSeqNumber();
     }
 
     public String read(String pattern) {
@@ -91,8 +108,11 @@ public class ClientService {
 
         return c.getString();
     }
-
+    
     public String take(String pattern, Integer tries) {
+        return null;
+    }
+        /* 
         ArrayList<String> reservedTuples = takePhase1(pattern);
 
         if (reservedTuples.size() != 3) {
@@ -188,7 +208,7 @@ public class ClientService {
         }
         debug("takePhase2: All acks received");
     }
-
+*/
     public List<String> getTupleSpacesState(Integer id) {
         ResponseCollector c = new ResponseCollector();
         getTupleSpacesStateRequest request = getTupleSpacesStateRequest.newBuilder().build();
