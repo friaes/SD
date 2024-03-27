@@ -70,23 +70,32 @@ cd NameServer
 python3 server.py [-debug]
 ```
 
+### Sequencer
+
+To run from project root:
+
+```s
+cd Sequencer
+mvn compile exec:java -Dexec.args="8080"
+```
+
 ### TupleSpaces Servers
 
 To compile and run the three servers from project root, open three terminals and do:
 
 - First terminal
 ```s
-cd ServerR2
+cd ServerR3
 mvn compile exec:java -Dexec.args="2001 A [-debug]"
 ```
 - Second terminal
 ```s
-cd ServerR2
+cd ServerR3
 mvn compile exec:java -Dexec.args="2002 B [-debug]"
 ```
 - Third terminal
 ```s
-cd ServerR2
+cd ServerR3
 mvn compile exec:java -Dexec.args="2003 C [-debug]"
 ```
 
